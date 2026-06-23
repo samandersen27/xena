@@ -61,9 +61,9 @@ export default function Home() {
         {/* Header + hero */}
         <div style={{ display: 'grid', gridTemplateColumns: heroPhoto ? '1fr auto' : '1fr', gap: '2rem', alignItems: 'start', marginBottom: '1.5rem' }}>
           <div>
-            <h1 style={{ fontSize: '2rem', marginBottom: '0.3rem' }}>Cactus museum</h1>
+            <h1 style={{ fontSize: '2rem', marginBottom: '0.3rem' }}>Cactus checklist</h1>
             <p style={{ color: 'var(--muted)', fontSize: '0.9rem', fontFamily: 'sans-serif', marginBottom: '1.4rem' }}>
-              A personal record of every species seen in the Desert Southwest.<br />
+              A personal record of every species seen in the US Southwest. The goal is to see them all<br />
               Synced from iNaturalist · {data.synced_at?.slice(0, 10)}
             </p>
 

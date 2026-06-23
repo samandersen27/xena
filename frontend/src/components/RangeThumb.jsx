@@ -26,9 +26,11 @@ export default function RangeThumb({ range, states = [], height = 92 }) {
       aria-label={range ? 'Native range' : 'No range data'}
     >
       <rect x="0" y="0" width={W} height={H} className="rt-bg" />
-      {states.map((s, i) => (
-        <polygon key={i} points={toPts(s.ring)} className="rt-state" />
-      ))}
+      {states.flatMap((s, i) =>
+        (s.rings || (s.ring ? [s.ring] : [])).map((ring, j) => (
+          <polygon key={`${i}-${j}`} points={toPts(ring)} className="rt-state" />
+        ))
+      )}
       {range?.polygon
         ? <polygon points={toPts(range.polygon)} className="rt-range" />
         : <text x={W / 2} y={H / 2} className="rt-none" textAnchor="middle">no range data</text>

@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from 'react-router-dom'
 import Nav from '../components/Nav'
 import RangeThumb from '../components/RangeThumb'
-import { useData, useObservationsForGenus, useSwStates } from '../lib/data'
+import { useData, useObservationsForGenus, useSwStates, useRanges } from '../lib/data'
 
 export default function GenusDetail() {
   const { genus }   = useParams()
@@ -9,7 +9,7 @@ export default function GenusDetail() {
   const { data, loading } = useData()
   const genusObs    = useObservationsForGenus(genus)
   const swStates    = useSwStates()
-  const ranges      = data?.ranges ?? {}
+  const ranges      = useRanges()
 
   if (loading) return <><Nav /><div className="page loading">Loading…</div></>
 
@@ -81,7 +81,7 @@ export default function GenusDetail() {
                   )}
                   <div className="range-thumb-block">
                     <div className="rt-label">Native range</div>
-                    <RangeThumb range={ranges[String(taxon.inat_id)]} states={swStates} />
+                    <RangeThumb range={ranges.byId[String(taxon.inat_id)] || ranges.byName[(taxon.name||'').toLowerCase()]} states={swStates} />
                   </div>
                 </div>
               </div>
@@ -105,7 +105,7 @@ export default function GenusDetail() {
                     {c.common_name && <div className="tile-common">{c.common_name}</div>}
                     <div className="range-thumb-block">
                       <div className="rt-label">Native range</div>
-                      <RangeThumb range={ranges[String(c.inat_id)]} states={swStates} />
+                      <RangeThumb range={ranges.byName[(c.name||'').toLowerCase()]} states={swStates} />
                     </div>
                   </div>
                 </div>

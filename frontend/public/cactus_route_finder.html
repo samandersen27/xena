@@ -108,9 +108,10 @@ function clearAll() {
 // ── Load range + life-list data ─────────────────────────────────────────────────
 (async function loadDB() {
   try {
-    const res = await fetch('./data.json');
-    DB = await res.json();
-    ranges = Object.entries(DB.ranges || {}).map(([id, r]) => ({
+    const [dRes, rRes] = await Promise.all([fetch('./data.json'), fetch('./ranges.json')]);
+    DB = await dRes.json();
+    const rangeData = (await rRes.json()).ranges || {};
+    ranges = Object.entries(rangeData).map(([id, r]) => ({
       inatId: parseInt(id, 10),
       display: r.display_name || r.taxon_name,
       common: '',

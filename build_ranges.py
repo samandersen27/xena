@@ -26,6 +26,7 @@ from scipy import stats
 
 HERE        = Path(__file__).parent
 DATA_PATH   = HERE / "frontend" / "public" / "data.json"
+RANGES_PATH = HERE / "frontend" / "public" / "ranges.json"
 COORDS_CACHE = HERE / "coords_cache.json"
 IDS_CACHE   = HERE / "taxon_ids.json"
 HEADERS     = {"User-Agent": "Xena-CactusMuseum/0.2"}
@@ -248,19 +249,24 @@ def main():
     resolved = {}   # inat_id -> {name, inat_name}
     for c in checklist:
         tid, inat_name = resolve_taxon_id(c["name"], known_ids, id_cache)
-        c["inat_id"] = tid          # annotate checklist entry for the frontend
         if tid is not None:
             resolved.setdefault(tid, {"name": c["name"], "inat_name": inat_name})
     IDS_CACHE.write_text(json.dumps(id_cache, indent=2), encoding="utf-8")
     print(f"  -> {len(resolved)} unique iNat taxa\n")
 
-    def save_data():
-        data["ranges"] = ranges
-        data["ranges_built_at"] = time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime())
-        DATA_PATH.write_text(json.dumps(data, indent=2), encoding="utf-8")
+    # Ranges are written to their OWN file (ranges.json) so the per-deploy
+    # `sync.py` rebuild of data.json never clobbers them. Each range carries
+    # its display_name, so the frontend can match by id (observed taxa) or by
+    # name (checklist species) without data.json needing any extra fields.
+    def save_ranges():
+        RANGES_PATH.write_text(json.dumps({
+            "built_at": time.strftime("%Y-%m-%dT%H:%M:%SZ", time.gmtime()),
+            "ranges": ranges,
+        }, indent=2), encoding="utf-8")
 
     # 2-4) Fetch, Grubbs-filter, hull
-    ranges = data.get("ranges", {}) or {}     # resume any previously-built ranges
+    prev = load_json(RANGES_PATH, {})
+    ranges = prev.get("ranges", {}) or {}     # resume any previously-built ranges
     items = list(resolved.items())
     for i, (tid, meta) in enumerate(items, 1):
         name = meta["name"]
@@ -307,13 +313,13 @@ def main():
               f"{len(hull)}-vertex hull", flush=True)
 
         if i % 8 == 0:         # frequent checkpoint — background procs die ~35min
-            save_data()
+            save_ranges()
 
-    save_data()
+    save_ranges()
 
     print("\n=== SUMMARY ===")
     print(f"  Ranges built: {len(ranges)} / {len(items)} taxa")
-    print(f"  Saved to: {DATA_PATH}")
+    print(f"  Saved to: {RANGES_PATH}")
 
 
 if __name__ == "__main__":

@@ -4,6 +4,7 @@ const DataContext = createContext(null)
 
 export function DataProvider({ children }) {
   const [data, setData]     = useState(null)
+  const [ranges, setRanges] = useState({ byId: {}, byName: {} })
   const [states, setStates] = useState([])   // simplified SW states outline
   const [loading, setLoading] = useState(true)
   const [error, setError]   = useState(null)
@@ -14,14 +15,23 @@ export function DataProvider({ children }) {
         if (!r.ok) throw new Error(`Could not load data.json (${r.status})`)
         return r.json()
       }),
+      // Ranges live in their own file so sync.py's data.json rebuild can't wipe them
+      fetch('/xena/ranges.json').then(r => r.ok ? r.json() : { ranges: {} }).catch(() => ({ ranges: {} })),
       fetch('/xena/sw_states.json').then(r => r.ok ? r.json() : []).catch(() => []),
     ])
-      .then(([d, st]) => { setData(d); setStates(st); setLoading(false) })
+      .then(([d, rg, st]) => {
+        const byId = rg.ranges || {}
+        const byName = {}
+        Object.values(byId).forEach(r => {
+          if (r.display_name) byName[r.display_name.toLowerCase()] = r
+        })
+        setData(d); setRanges({ byId, byName }); setStates(st); setLoading(false)
+      })
       .catch(e => { setError(e.message); setLoading(false) })
   }, [])
 
   return (
-    <DataContext.Provider value={{ data, states, loading, error }}>
+    <DataContext.Provider value={{ data, ranges, states, loading, error }}>
       {children}
     </DataContext.Provider>
   )
@@ -31,10 +41,21 @@ export function useData() {
   return useContext(DataContext)
 }
 
-// Range polygon for a taxon (by iNat id), or null
+// Range polygon for an observed taxon (by iNat id), or null
 export function useRange(inatId) {
-  const { data } = useData()
-  return data?.ranges?.[String(inatId)] ?? null
+  const { ranges } = useData()
+  return ranges?.byId?.[String(inatId)] ?? null
+}
+
+// Range polygon for a checklist species (by scientific name), or null
+export function useRangeByName(name) {
+  const { ranges } = useData()
+  return ranges?.byName?.[(name || '').toLowerCase()] ?? null
+}
+
+export function useRanges() {
+  const { ranges } = useData()
+  return ranges
 }
 
 export function useSwStates() {

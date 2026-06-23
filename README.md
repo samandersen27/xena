@@ -1,7 +1,7 @@
 # Xena 🌵
 A personal cactus museum — synced from iNaturalist, hosted on GitHub Pages.
 
-**Live site:** `https://YOUR_USERNAME.github.io/xena`
+**Live site:** `https://samandersen27.github.io/xena`
 
 ## How it works
 - `sync.py` pulls all your cactus observations from iNaturalist and writes them to `frontend/public/data.json`

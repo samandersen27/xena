@@ -1,0 +1,81 @@
+// AddObservation — placeholder pointing to iNaturalist
+// Since we're using iNat as the source of truth, the best
+// workflow is to add the observation there, then re-run sync.py
+
+import { useNavigate } from 'react-router-dom'
+import Nav from '../components/Nav'
+
+export function AddObservation() {
+  const navigate = useNavigate()
+  return (
+    <>
+      <Nav />
+      <div className="page" style={{ maxWidth: 600 }}>
+        <div className="back-btn">
+          <button className="btn btn-secondary btn-small" onClick={() => navigate(-1)}>← Back</button>
+        </div>
+        <h1 style={{ marginBottom: '0.5rem' }}>Add an observation</h1>
+        <p style={{ color: 'var(--muted)', fontFamily: 'sans-serif', fontSize: '0.9rem', marginBottom: '1.5rem' }}>
+          Since Xena syncs from iNaturalist, the best way to add a new sighting is directly on iNaturalist — then run <code>python sync.py</code> to pull it in.
+        </p>
+        <a
+          href="https://www.inaturalist.org/observations/new"
+          target="_blank"
+          rel="noreferrer"
+          className="btn btn-primary"
+          style={{ display: 'inline-block', marginBottom: '1.5rem' }}
+        >
+          Add on iNaturalist ↗
+        </a>
+        <p style={{ fontFamily: 'sans-serif', fontSize: '0.83rem', color: 'var(--muted)' }}>
+          After logging it there, come back and run:<br />
+          <code style={{ background: 'var(--sand-dark)', padding: '2px 6px', borderRadius: 4 }}>python sync.py</code><br />
+          then rebuild the site with:<br />
+          <code style={{ background: 'var(--sand-dark)', padding: '2px 6px', borderRadius: 4 }}>npm run build</code>
+        </p>
+      </div>
+    </>
+  )
+}
+
+export function FieldTrips() {
+  return (
+    <>
+      <Nav />
+      <div className="page">
+        <h1 style={{ marginBottom: '0.5rem' }}>Field trips</h1>
+        <p style={{ color: 'var(--muted)', fontFamily: 'sans-serif', fontSize: '0.9rem' }}>
+          Coming soon — group your observations into named outings and view per-trip species tallies and route maps.
+        </p>
+      </div>
+    </>
+  )
+}
+
+export function Curiosity() {
+  return (
+    <>
+      <Nav />
+      <div className="page">
+        <h1 style={{ marginBottom: '0.5rem' }}>Curiosity layer</h1>
+        <p style={{ color: 'var(--muted)', fontFamily: 'sans-serif', fontSize: '0.9rem', marginBottom: '1.5rem' }}>
+          Home for special studies — saguaro bifurcation, opuntia pad characterization, and whatever else seems interesting along the way.
+        </p>
+        <div className="tile-grid">
+          {[
+            { title: 'Saguaro bifurcation', desc: 'Record and map crested saguaros across the Sonoran Desert.' },
+            { title: 'Opuntia pad characterization', desc: 'Systematic pad measurements to distinguish range-overlapping prickly pears.' },
+            { title: 'More to come…', desc: 'New study types can be added any time.' },
+          ].map(s => (
+            <div key={s.title} className="tile" style={{ cursor: 'default' }}>
+              <div className="tile-body">
+                <div className="tile-name" style={{ fontStyle: 'normal', fontWeight: 500 }}>{s.title}</div>
+                <div className="tile-meta" style={{ marginTop: 6 }}>{s.desc}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </>
+  )
+}

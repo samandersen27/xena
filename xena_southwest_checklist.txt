@@ -1,0 +1,224 @@
+XENA — DESERT SOUTHWEST CACTUS CHECKLIST
+==========================================================================
+Source: "Types of Cactus in the U.S." by Erik Gauger, Notes from the Road
+        https://www.notesfromtheroad.com/desertsouthwest/cactus-species.html
+        (updated June 25, 2024 — page lists 193 species)
+
+	Book sources:
+	
+	1. Cacti of the Southwest by Rick and Nora Bowers
+	2. The Cacti of Arizona by Lyman Benson
+	3. The Native Cacti of California by Benson
+	4. Field guide to Cacti & other succulents of Arizona by Breslin
+	5. The Jepson Desert Manual 
+	6. Colorado Cacti by Boissevain
+	7. 
+
+METHODOLOGY
+--------------------------------------------------------------------------
+Included if the species description places it (even partially) in the
+Desert Southwest: AZ, NM, UT, NV, CA, CO, or TX.
+Excluded only if the description places it exclusively in FL, PR, the
+Caribbean, or the Midwest/Eastern US with no Southwest range at all.
+
+TOTAL: 
+This is the working denominator for Xena's overall progress bar.
+
+==========================================================================
+Scientific Name                              Common Name                         Genus
+--------------------------------------------------------------------------
+Acanthocereus tetragonus                     Fairy Castle Cactus                 Acanthocereus
+Ancistrocactus brevihamatus                  Shorthook Fishhook Cactus           Ancistrocactus
+Ancistrocactus scheeri                       Scheer Fishhook Cactus              Ancistrocactus
+Ariocarpus fissuratus                        Dry Whiskey Cactus                  Ariocarpus
+Astrophytum asterias                         Star Peyote                         Astrophytum
+Bergerocactus emoryi                         Golden-spined Cereus                Bergerocactus
+Carnegiea gigantea                           Saguaro                             Carnegiea
+Cochemiea dioica                             Strawberry Fishhook Cactus          Cochemiea
+Cochemiea grahamii                           Graham's Nipple Cactus              Cochemiea
+Cochemiea tetrancistra                       Common Fishhook Cactus              Cochemiea
+Coryphantha alversonii                       Foxtail Cactus                      Coryphantha
+Coryphantha chlorantha                       Mojave spinystar                    Coryphantha
+Coryphantha dasyacantha                      Desert Beehive Cactus               Coryphantha
+Coryphantha duncanii                         Duncan Beehive Cactus               Coryphantha
+Coryphantha echinus                          Sea Urchin Cactus                   Coryphantha
+Coryphantha macromeris                       Nipple Beehive Cactus               Coryphantha
+Coryphantha missouriensis                    Missouri Foxtail Cactus             Coryphantha
+Coryphantha nickelsiae                       Nickels's Pincushion Cactus         Coryphantha
+Coryphantha ramillosa                        Whiskerbush                         Coryphantha
+Coryphantha recurvata                        Santa Cruz Beehive Cactus           Coryphantha
+Coryphantha robertsii                        Junior Tom Thumb Cactus             Coryphantha
+Coryphantha robustispina                     Pima Pineapple                      Coryphantha
+Coryphantha sneedii                          Sneed Beehive Cactus                Coryphantha
+Coryphantha sulcata                          Pineapple Cactus                    Coryphantha
+Coryphantha tuberculosa                      Cob Beehive Cactus                  Coryphantha
+Coryphantha vivipara                         Common Beehive Cactus               Coryphantha
+Cylindropuntia abyssi                        Peach Springs Canyon Cholla         Cylindropuntia
+Cylindropuntia acanthocarpa                  Buckhorn Cholla                     Cylindropuntia
+Cylindropuntia arbuscula                     Arizona Pencil Cholla               Cylindropuntia
+Cylindropuntia bernardina                    Cane cholla                         Cylindropuntia
+Cylindropuntia bigelovii                     Teddy Bear Cholla                   Cylindropuntia
+Cylindropuntia californica                   California Cholla                   Cylindropuntia
+Cylindropuntia chuckwallensis                Chuckwalla Cholla                   Cylindropuntia
+Cylindropuntia davisii                       Thistle Cholla                      Cylindropuntia
+Cylindropuntia echinocarpa                   Silver Cholla                       Cylindropuntia
+Cylindropuntia fosbergii                     Hoffmann's Teddybear Cholla         Cylindropuntia
+Cylindropuntia fulgida                       Jumping Cholla                      Cylindropuntia
+Cylindropuntia ganderi                       Gander's Buckhorn Cholla            Cylindropuntia
+Cylindropuntia imbricata                     Cane Cholla                         Cylindropuntia
+Cylindropuntia kleiniae                      Klein's Pencil Cactus               Cylindropuntia
+Cylindropuntia leptocaulis                   Pencil Cactus                       Cylindropuntia
+Cylindropuntia munzii                        Munz's Cholla                       Cylindropuntia
+Cylindropuntia prolifera                     Coastal Cholla                      Cylindropuntia
+Cylindropuntia ramosissima                   Diamond Cholla                      Cylindropuntia
+Cylindropuntia rosea                         Hudson Pear                         Cylindropuntia
+Cylindropuntia spinosior                     Spiny Cholla                        Cylindropuntia
+Cylindropuntia tunicata                      Sheathed Cholla                     Cylindropuntia
+Cylindropuntia versicolor                    Staghorn Cholla                     Cylindropuntia
+Cylindropuntia whipplei                      Whipple Cholla                      Cylindropuntia
+Cylindropuntia wolfii                        Wolf's Cholla                       Cylindropuntia
+Echinocereus bonkerae                        Bonker Hedgehog Cactus              Echinocereus
+Echinocactus horizonthalonius                Devilshead                          Echinocactus
+Echinocactus texensis                        Horse Crippler                      Echinocactus
+Echinocereus arizonicus                      Arizona Claret-cup Cactus           Echinocereus
+Echinocereus berlandieri                     Berlandier's Hedgehog Cactus        Echinocereus
+Echinocereus boyce-thompsonii                Boyce Thompson Hedgehog Cactus      Echinocereus
+Echinocereus chisoensis                      Chisos Mountain Hedgehog Cactus     Echinocereus
+Echinocereus coccineus                       Scarlet Hedgehog Cactus             Echinocereus
+Echinocereus dasyacanthus                    Texas Rainbow Cactus                Echinocereus
+Echinocereus engelmannii                     Strawberry Hedgehog Cactus          Echinocereus
+Echinocereus enneacanthus                    Strawberry Cactus                   Echinocereus
+Echinocereus fasciculatus                    Robust Hedgehog Cactus              Echinocereus
+Echinocereus fendleri                        Pinkflower Hedgehog Cactus          Echinocereus
+Echinocereus ledingii                        Leding's Hedgehog Cactus            Echinocereus
+Echinocereus nicholii                        Nichol's Hedgehog Cactus            Echinocereus
+Echinocereus papillosus                      Yellow-flowered Alicoche            Echinocereus
+Echinocereus pectinatus                      Rainbow Hedgehog Cactus             Echinocereus
+Echinocereus pentalophus                     Lady Finger Cactus                  Echinocereus
+Echinocereus poselgeri                       Dahlia Hedgehog Cactus              Echinocereus
+Echinocereus pseudopectinatus                Devilthorn                          Echinocereus
+Echinocereus reichenbachii                   Lace Hedgehog Cactus                Echinocereus
+Echinocereus rigidissimus                    Arizona Rainbow Cactus              Echinocereus
+Echinocereus russanthus                      Varied Hedgehog Cactus              Echinocereus
+Echinocereus stramineus                      Straw-color Hedgehog Cactus         Echinocereus
+Echinocereus triglochidiatus                 Mojave Mound Cactus                 Echinocereus
+Echinocereus viridiflorus                    Green flowered Hedgehog Cactus      Echinocereus
+Echinomastus erectocentrus                   Redspine Butterfly Cactus           Echinomastus
+Echinomastus gautii                          Top Cactus                          Echinomastus
+Echinomastus intertextus                     White Fishhook Cactus               Echinomastus
+Echinomastus johnsonii                       Johnson's Fishhook Cactus           Echinomastus
+Echinomastus mariposensis                    Mariposa Cactus                     Echinomastus
+Echinomastus warnockii                       Warnock's Fishhook Cactus           Echinomastus
+Epithelantha bokei                           Pingpong Ball Cactus                Epithelantha
+Epithelantha micromeris                      Button Cactus                       Epithelantha
+Escobaria albicolumnaria                     Silver Lace Cob Cactus              Escobaria
+Escobaria alversonii                         Cushion Foxtail Cactus              Escobaria
+Escobaria dasyacantha                        Dense Cory Cactus                   Escobaria
+Escobaria desertii                           Desert Beehive Cactus               Escobaria
+Escobaria duncanii                           Duncan Pincushion Cactus            Escobaria
+Escobaria emskoetteriana                     Big Nipple Cactus                   Escobaria
+Escobaria guadalupensis                      Guadalupe Pincushion Cactus         Escobaria
+Escobaria hesteri                            Hester's Pincushion Cactus          Escobaria
+Escobaria minima                             Birdfoot Cactus                     Escobaria
+Escobaria missouriensis                      Missouri Foxtail Cactus             Escobaria
+Escobaria orcuttii                           Orcutt's Foxtail Cactus             Escobaria
+Escobaria organensis                         Organ Mountain Foxtail Cactus       Escobaria
+Escobaria robbinsorum                        Cochise Pincushion Cactus           Escobaria
+Escobaria sandbergii                         San Andreas Pincushion Cactus       Escobaria
+Escobaria sneedii                            Carpet Foxtail Cactus               Escobaria
+Escobaria tuberculosa                        Cob Beehive Cactus                  Escobaria
+Escobaria villardii                          Villard Pincushion Cactus           Escobaria
+Escobaria vivipara                           Spinystar                           Escobaria
+Ferocactus cylindraceus                      Desert Barrel Cactus                Ferocactus
+Ferocactus emoryi                            Traveler's Friend                   Ferocactus
+Ferocactus hamatacanthus                     Turk's Head                         Ferocactus
+Ferocactus viridescens                       Keg Cactus                          Ferocactus
+Ferocactus wislizeni                         Arizona Barrel Cactus               Ferocactus
+Glandulicactus uncinatus                     Chihuhuan fishhook cactus           Glandulicactus
+Grusonia aggeria                             Big Bend Pricklypear                Grusonia
+Grusonia clavata                             Club Cholla                         Grusonia
+Grusonia emoryi                              Cursed Cholla                       Grusonia
+Grusonia grahamii                            Graham Dog Cactus                   Grusonia
+Grusonia kunzei                              Kunze's Club Cactus                 Grusonia
+Grusonia parishii                            Matted Cholla                       Grusonia
+Grusonia pulchella                           Sagebrush Cholla                    Grusonia
+Grusonia schottii                            Dog Cholla                          Grusonia
+Hamatocactus bicolor                         Twisted-rib Cactus                  Hamatocactus
+Homalocephala polycephalus                   Many headed Barrel                  Homalocephala
+Lophophora williamsii                        Peyote                              Lophophora
+Mammillaria barbata                          Greenflower Nipple Cactus           Mammillaria
+Mammillaria heyderi                          Little Nipple Cactus                Mammillaria
+Mammillaria lasiacantha                      Lacespine Nipple Cactus             Mammillaria
+Mammillaria mainiae                          Counterclockwise Nipple Cactus      Mammillaria
+Mammillaria macdougalii                      MacDougal Pincushion                Mammillaria
+Mammillaria melacantha                       Little Pincushion                   Mammillaria
+Mammillaria pottsii                          Rat-tail Nipple Cactus              Mammillaria
+Mammillaria prolifera                        Texas Nipple Cactus                 Mammillaria
+Mammillaria sphaerica                        Longmamma Nipple Cactus             Mammillaria
+Mammillaria thornberi                        Thornber's Nipple Cactus            Mammillaria
+Mammillaria viridiflora                      Greenflower Pincushion              Mammillaria
+Mammillaria wrightii                         Wright's Nipple Cactus              Mammillaria
+Neolloydia conoidea                          Chihuahuan Beehive Cactus           Neolloydia
+Opuntia aciculata                            Old Man's Whiskers                  Opuntia
+Opuntia atrispina                            Black-spined Pricklypear            Opuntia
+Opuntia aureispina                           Rio Grande Pricklypear              Opuntia
+Opuntia aurea                                Golden Pricklypear                  Opuntia
+Opuntia aureispina                           Rio Grande Pricklypear              Opuntia
+Opuntia azurea                               Big Bend Pricklypear                Opuntia
+Opuntia basilaris                            Beavertail Pricklypear              Opuntia
+Opuntia chlorotica                           Pancake Pricklypear                 Opuntia
+Opuntia chisosensis                          Chisos mountain Pricklypear         Opuntia
+Opuntia cymochila                            Grassland Pricklypear               Opuntia
+Opuntia diploursina                          Lake Mead Pricklypear               Opuntia
+Opuntia engelmannii                          Engelmann's Pricklypear             Opuntia
+Opuntia erinacea                             Mojave Pricklypear                  Opuntia
+Opuntia fragilis                             Brittle Pricklypear                 Opuntia
+Opuntia gosseliniana                         Violet Pricklypear                  Opuntia
+Opuntia laevis                               Smooth Pricklypear                  Opuntia
+Opuntia littoralis                           Coastal Pricklypear                 Opuntia
+Opuntia lindheimeri                          Texas prickly pear                  Opuntia 
+Opuntia macrocentra                          Long-spined Purplish Pricklypear    Opuntia
+Opuntia macrorhiza                           Western Pricklypear                 Opuntia
+Opuntia martiniana                           Seashore Cactus                     Opuntia
+Opuntia oricola                              Chaparral Pricklypear               Opuntia
+Opuntia phaeacantha                          Tulip Pricklypear                   Opuntia
+Opuntia pinkavae                             Bulrush Canyon Pricklypear          Opuntia
+Opuntia polyacantha                          Plains Pricklypear                  Opuntia
+Opuntia pottsii                              Potts Pricklypear                   Opuntia 
+Opuntia rufida                               Blind Cactus                        Opuntia
+Opuntia santarita                            Santa Rita Pricklypear              Opuntia
+Opuntia semispinosa
+Opuntia spinosibacca                         Spinyfruit Prickly Pear             Opuntia 
+Opuntia stricta                              Pest Pricklypear                    Opuntia
+Opuntia strigil                              Marblefruit Pricklypear             Opuntia 
+Lophocereus schottii                         Senita                              Lophocereus
+Pediocactus bradyi                           Marble Canyon Cactus                Pediocactus
+Pediocactus despainii                        San Rafael Cactus                   Pediocactus
+Pediocactus knowltonii                       Knowlton's Miniature Cactus         Pediocactus
+Pediocactus paradinei                        Kaibab Plains Cactus                Pediocactus
+Pediocactus peeblesianus                     Navajo Pincushion Cactus            Pediocactus
+Pediocactus sileri                           Gypsum Cactus                       Pediocactus
+Pediocactus simpsonii                        Simpson Hedgehog Cactus             Pediocactus
+Pediocactus winkleri                         Winkler's Cactus                    Pediocactus
+Peniocereus greggii                          Night-blooming Cereus               Peniocereus
+Peniocereus striatus                         Gearstem Cactus                     Peniocereus
+Sclerocactus brevihamatus                    Shorthook Fishhook Cactus           Sclerocactus
+Sclerocactus brevispinus                     Pariette Cactus                     Sclerocactus
+Sclerocactus cloverae                        Clover Eagle-Claw Cactus            Sclerocactus
+Sclerocactus glaucus                         Colorado Hookless Cactus            Sclerocactus
+Sclerocactus mesae-verdae                    Mesa Verde Fishhook Cactus          Sclerocactus
+Sclerocactus papyracanthus                   Grama Grass Cactus                  Sclerocactus
+Sclerocactus parviflorus                     Eagle Claw Cactus                   Sclerocactus
+Sclerocactus polyancistrus                   Redspined Fishhook Cactus           Sclerocactus
+Sclerocactus pubispinus                      Great Basin Eagle Claw Cactus       Sclerocactus
+Sclerocactus scheeri                         Desert Valley Fishhook Cactus       Sclerocactus
+Sclerocactus sileri                          Silver Fishhook Cactus              Sclerocactus
+Sclerocactus spinosior                       Spinier's Devils-claw Cactus        Sclerocactus
+Sclerocactus uncinatus                       Brown-flowered Hedgehog             Sclerocactus
+Sclerocactus wetlandicus                     Uinta Basin Hookless Cactus         Sclerocactus
+Sclerocactus whipplei                        Rose Devil's Claw Cactus            Sclerocactus
+Sclerocactus wrightiae                       Wright's Fishhook Cactus            Sclerocactus
+Selenicereus spinulosus                      Vine-like Moonlight Cactus          Selenicereus
+Stenocereus thurberi                         Organ Pipe Cactus                   Stenocereus
+Thelocactus bicolor                          Glory of Texas Cactus               Thelocactus
+Thelocactus setispinus                       Miniature Barrel Cactus             Thelocactus

@@ -76,7 +76,7 @@ export default function Home() {
             </div>
             <ProgressBar pct={pct} />
             <div style={{ fontSize: '0.75rem', color: 'var(--muted)', fontFamily: 'sans-serif', marginTop: '0.4rem' }}>
-              167-species checklist · Notes from the Road / Erik Gauger
+              Total list of species counted is available here: (link)
             </div>
           </div>
 

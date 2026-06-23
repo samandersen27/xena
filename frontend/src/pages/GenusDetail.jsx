@@ -1,12 +1,15 @@
 import { useParams, useNavigate } from 'react-router-dom'
 import Nav from '../components/Nav'
-import { useData, useObservationsForGenus } from '../lib/data'
+import RangeThumb from '../components/RangeThumb'
+import { useData, useObservationsForGenus, useSwStates } from '../lib/data'
 
 export default function GenusDetail() {
   const { genus }   = useParams()
   const navigate    = useNavigate()
   const { data, loading } = useData()
   const genusObs    = useObservationsForGenus(genus)
+  const swStates    = useSwStates()
+  const ranges      = data?.ranges ?? {}
 
   if (loading) return <><Nav /><div className="page loading">Loading…</div></>
 
@@ -76,6 +79,10 @@ export default function GenusDetail() {
                   {taxon.last_seen && (
                     <div className="tile-meta">Last: {taxon.last_seen}</div>
                   )}
+                  <div className="range-thumb-block">
+                    <div className="rt-label">Native range</div>
+                    <RangeThumb range={ranges[String(taxon.inat_id)]} states={swStates} />
+                  </div>
                 </div>
               </div>
             )
@@ -96,6 +103,10 @@ export default function GenusDetail() {
                   <div className="tile-body">
                     <div className="tile-name">{c.name}</div>
                     {c.common_name && <div className="tile-common">{c.common_name}</div>}
+                    <div className="range-thumb-block">
+                      <div className="rt-label">Native range</div>
+                      <RangeThumb range={ranges[String(c.inat_id)]} states={swStates} />
+                    </div>
                   </div>
                 </div>
               ))}

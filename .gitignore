@@ -3,3 +3,6 @@ dist/
 .DS_Store
 *.pyc
 __pycache__/
+coords_cache.json
+taxon_ids.json
+*.log

@@ -1,9 +1,9 @@
 import { useParams, useNavigate } from 'react-router-dom'
 import { useState } from 'react'
-import { MapContainer, TileLayer, CircleMarker, Popup } from 'react-leaflet'
+import { MapContainer, TileLayer, CircleMarker, Popup, Polygon } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
 import Nav from '../components/Nav'
-import { useTaxon, useObservationsForTaxon } from '../lib/data'
+import { useTaxon, useObservationsForTaxon, useRange } from '../lib/data'
 
 function PhotoGallery({ observations }) {
   const allPhotos = observations.flatMap(o =>
@@ -86,13 +86,19 @@ export default function SpeciesDetail() {
   const navigate    = useNavigate()
   const taxon       = useTaxon(taxonId)
   const observations = useObservationsForTaxon(taxonId)
+  const range       = useRange(taxonId)
 
   if (!taxon) return <><Nav /><div className="page loading">Loading…</div></>
 
   const withCoords = observations.filter(o => o.latitude && o.longitude)
+  // Range polygon arrives as [lng, lat]; Leaflet wants [lat, lng]
+  const rangeLatLng = range?.polygon?.map(([lng, lat]) => [lat, lng]) ?? null
   const center     = withCoords.length
     ? [withCoords[0].latitude, withCoords[0].longitude]
-    : [33.5, -112.0]
+    : range
+      ? [range.centroid[1], range.centroid[0]]
+      : [33.5, -112.0]
+  const showMap    = withCoords.length > 0 || rangeLatLng
 
   return (
     <>
@@ -123,21 +129,36 @@ export default function SpeciesDetail() {
           <div>
             <div className="section-head" style={{ marginTop: 0 }}>
               <h2>Where seen</h2>
-              <span className="section-count">{withCoords.length} with GPS</span>
+              <span className="section-count">
+                {withCoords.length} with GPS
+                {range && ` · range from ${range.kept_points} sightings`}
+              </span>
             </div>
             <div style={{ marginTop: '0.8rem' }}>
-              {withCoords.length > 0 ? (
-                <MapContainer center={center} zoom={7} className="map-wrap">
+              {showMap ? (
+                <MapContainer center={center} zoom={withCoords.length ? 7 : 6} className="map-wrap">
                   <TileLayer
-                    attribution='© <a href="https://openstreetmap.org">OpenStreetMap</a>'
+                    attribution='© <a href="https://openstreetmap.org">OpenStreetMap</a> · range from <a href="https://inaturalist.org">iNaturalist</a>'
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                   />
+                  {rangeLatLng && (
+                    <Polygon
+                      positions={rangeLatLng}
+                      pathOptions={{ color: '#3a7d44', weight: 1.5, fillColor: '#3a7d44', fillOpacity: 0.15 }}
+                    >
+                      <Popup>
+                        <strong>Native range</strong><br />
+                        {range.kept_points} community sightings
+                        {range.outliers_removed > 0 && ` (${range.outliers_removed} outliers removed)`}
+                      </Popup>
+                    </Polygon>
+                  )}
                   {withCoords.map(o => (
                     <CircleMarker
                       key={o.id}
                       center={[o.latitude, o.longitude]}
                       radius={7}
-                      pathOptions={{ color: '#3a7d44', fillColor: '#3a7d44', fillOpacity: 0.85, weight: 1.5 }}
+                      pathOptions={{ color: '#1f4d27', fillColor: '#3a7d44', fillOpacity: 0.9, weight: 1.5 }}
                     >
                       <Popup>
                         <strong>{o.observed_on}</strong><br />

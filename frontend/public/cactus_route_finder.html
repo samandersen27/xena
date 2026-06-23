@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Xena — Cactus Route Finder</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; overflow: hidden; font-family: Georgia, serif; background: #1a1a2e; color: #e0e0e0; }
+#layout { display: flex; height: 100vh; }
+#sidebar { width: 340px; flex-shrink: 0; background: #16213e; border-right: 2px solid #0f3460; display: flex; flex-direction: column; overflow: hidden; }
+#branding { padding: 14px 16px 10px; border-bottom: 1px solid #0f3460; flex-shrink: 0; }
+#branding h1 { font-size: 1rem; color: #e8d5b7; letter-spacing: .3px; }
+#branding p  { font-size: 0.68rem; color: #6b7498; margin-top: 3px; line-height: 1.4; }
+#form-section { padding: 14px 16px; flex-shrink: 0; border-bottom: 1px solid #0f3460; }
+.field-label { font-size: 0.68rem; color: #8a8fa8; margin-bottom: 4px; display: block; }
+.city-input { width: 100%; padding: 7px 10px; margin-bottom: 9px; background: #0f1b35; border: 1px solid #0f3460; border-radius: 5px; color: #e0e0e0; font-size: 0.82rem; font-family: Georgia, serif; outline: none; }
+.city-input:focus { border-color: #457b9d; }
+.city-input::placeholder { color: #3a4060; }
+#go-btn { width: 100%; padding: 9px 0; background: #457b9d; color: #fff; border: none; border-radius: 5px; font-size: 0.82rem; font-family: Georgia, serif; cursor: pointer; letter-spacing: .3px; transition: background .15s; }
+#go-btn:hover:not(:disabled) { background: #5a9ec0; }
+#go-btn:disabled { background: #2a4a60; color: #5a7a90; cursor: not-allowed; }
+#status-section { padding: 10px 16px; flex-shrink: 0; border-bottom: 1px solid #0f3460; display: none; }
+#prog-track { height: 4px; background: #0f3460; border-radius: 2px; margin-bottom: 7px; }
+#prog-fill  { height: 4px; background: #457b9d; border-radius: 2px; width: 0%; transition: width .3s; }
+#status-text { font-size: 0.68rem; color: #8a8fa8; line-height: 1.4; }
+#results-section { flex: 1; overflow-y: auto; }
+#route-summary { padding: 10px 16px; background: #0f1b35; border-bottom: 1px solid #0f3460; font-size: 0.7rem; color: #8a8fa8; line-height: 1.6; display: none; }
+#route-summary strong { color: #e8d5b7; }
+#species-count { padding: 8px 16px; font-size: 0.72rem; color: #8a8fa8; border-bottom: 1px solid #0f3460; display: none; }
+#species-count b { color: #e8d5b7; }
+.sp-card { display: flex; align-items: flex-start; gap: 10px; padding: 9px 14px; border-bottom: 1px solid #0f1b35; cursor: pointer; transition: background .1s; }
+.sp-card:hover { background: #1e2f50; }
+.sp-num { width: 22px; height: 22px; border-radius: 50%; background: #f4a261; color: #fff; font-size: 10px; font-weight: 700; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+.sp-info { flex: 1; min-width: 0; }
+.sp-sci  { font-style: italic; font-size: 0.78rem; color: #e0e0e0; line-height: 1.3; }
+.sp-com  { font-size: 0.67rem; color: #8a8fa8; margin-top: 1px; }
+.sp-n    { font-size: 0.63rem; color: #5a6a8a; margin-top: 2px; }
+.sp-link { font-size: 0.63rem; color: #457b9d; text-decoration: none; display: inline-block; margin-top: 2px; }
+.sp-link:hover { text-decoration: underline; }
+#empty-msg { padding: 20px 16px; font-size: 0.75rem; color: #6b7498; text-align: center; display: none; }
+#map { flex: 1; }
+.leaflet-popup-content-wrapper { border-radius: 6px; }
+.leaflet-popup-content { margin: 8px 10px; }
+</style>
+</head>
+<body>
+<div id="layout">
+  <div id="sidebar">
+    <div id="branding">
+      <h1>Cactus Route Finder</h1>
+      <p>Native cacti whose range your drive passes through &mdash; not yet on samandersen's list</p>
+    </div>
+    <div id="form-section">
+      <label class="field-label">Start city</label>
+      <input id="city-a" class="city-input" type="text" placeholder="e.g. Los Angeles, CA" autocomplete="off">
+      <label class="field-label">End city</label>
+      <input id="city-b" class="city-input" type="text" placeholder="e.g. St. George, UT" autocomplete="off">
+      <button id="go-btn">Find Cacti Along Route &rarr;</button>
+    </div>
+    <div id="status-section">
+      <div id="prog-track"><div id="prog-fill"></div></div>
+      <div id="status-text"></div>
+    </div>
+    <div id="results-section">
+      <div id="route-summary"></div>
+      <div id="species-count"></div>
+      <div id="empty-msg"></div>
+      <div id="species-list"></div>
+    </div>
+  </div>
+  <div id="map"></div>
+</div>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const C = {
+  valhalla:  'https://valhalla1.openstreetmap.de/route',
+  nominatim: 'https://nominatim.openstreetmap.org/search',
+  corridorKm: 25,   // a range counts if the route comes within this distance of it
+};
+
+let map, routeLine = null, layer = L.layerGroup();
+let DB = null;          // loaded data.json
+let ranges = [];        // [{inatId, display, common, genus, polygon:[[lng,lat]], bbox, centroid}]
+let samSeen = new Set();// iNat ids samandersen has observed
+
+// ── Map init ──────────────────────────────────────────────────────────────────
+map = L.map('map').setView([37, -112], 5);
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+  attribution: '&copy; <a href="https://openstreetmap.org">OpenStreetMap</a> | ranges: <a href="https://inaturalist.org">iNaturalist</a>', maxZoom: 18,
+}).addTo(map);
+layer.addTo(map);
+
+const $ = id => document.getElementById(id);
+const setProgress = (pct, msg) => { $('prog-fill').style.width = pct + '%'; $('status-text').textContent = msg; };
+const showStatus  = on => { $('status-section').style.display = on ? 'block' : 'none'; };
+function clearAll() {
+  if (routeLine) { map.removeLayer(routeLine); routeLine = null; }
+  layer.clearLayers();
+  $('route-summary').style.display = 'none';
+  $('species-count').style.display = 'none';
+  $('empty-msg').style.display = 'none';
+  $('species-list').innerHTML = '';
+}
+
+// ── Load range + life-list data ─────────────────────────────────────────────────
+(async function loadDB() {
+  try {
+    const res = await fetch('./data.json');
+    DB = await res.json();
+    ranges = Object.entries(DB.ranges || {}).map(([id, r]) => ({
+      inatId: parseInt(id, 10),
+      display: r.display_name || r.taxon_name,
+      common: '',
+      polygon: r.polygon,        // [[lng,lat], ...] closed ring
+      bbox: r.bbox,              // [minLng,minLat,maxLng,maxLat]
+      centroid: r.centroid,      // [lng,lat]
+    }));
+    // common names from the checklist
+    const commonByName = {};
+    (DB.checklist || []).forEach(c => { commonByName[(c.name||'').toLowerCase()] = c.common_name; });
+    ranges.forEach(r => { r.common = commonByName[(r.display||'').toLowerCase()] || ''; });
+    // samandersen's observed taxa = taxa with observations
+    (DB.taxa || []).forEach(t => { if ((t.obs_count||0) > 0 && t.inat_id) samSeen.add(t.inat_id); });
+    $('status-text').textContent = '';
+  } catch (e) {
+    alert('Could not load data.json — run sync.py and build_ranges.py first.\n' + e.message);
+  }
+})();
+
+// ── Geocoding + routing ─────────────────────────────────────────────────────────
+async function geocode(q) {
+  const url = `${C.nominatim}?q=${encodeURIComponent(q)}&format=json&limit=1`;
+  const data = await (await fetch(url, { headers: { 'Accept': 'application/json' } })).json();
+  if (!data.length) throw new Error(`Could not find "${q}"`);
+  return { lat: +data[0].lat, lng: +data[0].lon, name: data[0].display_name.split(',').slice(0, 2).join(',').trim() };
+}
+
+function decodePolyline6(str) {
+  const out = []; let i = 0, lat = 0, lng = 0;
+  while (i < str.length) {
+    let b, shift = 0, result = 0;
+    do { b = str.charCodeAt(i++) - 63; result |= (b & 0x1f) << shift; shift += 5; } while (b >= 0x20);
+    lat += (result & 1) ? ~(result >> 1) : (result >> 1);
+    shift = 0; result = 0;
+    do { b = str.charCodeAt(i++) - 63; result |= (b & 0x1f) << shift; shift += 5; } while (b >= 0x20);
+    lng += (result & 1) ? ~(result >> 1) : (result >> 1);
+    out.push([lng / 1e6, lat / 1e6]);   // [lng, lat]
+  }
+  return out;
+}
+
+async function getRoute(from, to) {
+  const body = { locations: [{ lon: from.lng, lat: from.lat }, { lon: to.lng, lat: to.lat }], costing: 'auto' };
+  const res = await fetch(C.valhalla, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) });
+  if (!res.ok) { const e = await res.json().catch(() => ({})); throw new Error(e.error || 'No drivable route found.'); }
+  const data = await res.json();
+  const leg = data.trip.legs[0];
+  const coords = typeof leg.shape === 'string' ? decodePolyline6(leg.shape) : leg.shape.coordinates;
+  return { coords, distanceKm: data.trip.summary.length, durationMin: data.trip.summary.time / 60 };
+}
+
+// ── Geometry: does the route pass through (or near) a range polygon? ─────────────
+function pointInRing(pt, ring) {
+  let inside = false;
+  for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+    const xi = ring[i][0], yi = ring[i][1], xj = ring[j][0], yj = ring[j][1];
+    if (((yi > pt[1]) !== (yj > pt[1])) &&
+        (pt[0] < (xj - xi) * (pt[1] - yi) / (yj - yi) + xi)) inside = !inside;
+  }
+  return inside;
+}
+function ccw(a, b, c) { return (c[1] - a[1]) * (b[0] - a[0]) > (b[1] - a[1]) * (c[0] - a[0]); }
+function segCross(a, b, c, d) { return ccw(a, c, d) !== ccw(b, c, d) && ccw(a, b, c) !== ccw(a, b, d); }
+
+// Approx degrees for the corridor tolerance at SW latitudes
+const KM_PER_DEG = 111;
+function distPointToSeg(p, a, b) {
+  // crude planar distance in degrees, scaled to km
+  const vx = b[0]-a[0], vy = b[1]-a[1];
+  const wx = p[0]-a[0], wy = p[1]-a[1];
+  const len2 = vx*vx + vy*vy;
+  let t = len2 ? (wx*vx + wy*vy)/len2 : 0;
+  t = Math.max(0, Math.min(1, t));
+  const dx = p[0]-(a[0]+t*vx), dy = p[1]-(a[1]+t*vy);
+  // longitude shrinks with latitude
+  const cosLat = Math.cos(p[1] * Math.PI/180);
+  return Math.sqrt((dx*cosLat)**2 + dy**2) * KM_PER_DEG;
+}
+
+function routeHitsRange(route, r, tolKm) {
+  const ring = r.polygon;
+  const [minX, minY, maxX, maxY] = r.bbox;
+  const pad = tolKm / KM_PER_DEG + 0.01;
+  // bbox cull
+  let rMinX=Infinity,rMinY=Infinity,rMaxX=-Infinity,rMaxY=-Infinity;
+  for (const p of route){ if(p[0]<rMinX)rMinX=p[0]; if(p[0]>rMaxX)rMaxX=p[0]; if(p[1]<rMinY)rMinY=p[1]; if(p[1]>rMaxY)rMaxY=p[1]; }
+  if (rMaxX < minX-pad || rMinX > maxX+pad || rMaxY < minY-pad || rMinY > maxY+pad) return null;
+
+  for (let i = 0; i < route.length; i++) {
+    const p = route[i];
+    if (pointInRing(p, ring)) return p;                       // route vertex inside range
+    if (i > 0 && segCrossesRing(route[i-1], p, ring)) return p; // segment crosses boundary
+  }
+  // near miss within tolerance: closest approach of any route segment to any ring vertex
+  if (tolKm > 0) {
+    for (const v of ring) {
+      for (let i = 1; i < route.length; i++) {
+        if (distPointToSeg(v, route[i-1], route[i]) <= tolKm) return v;
+      }
+    }
+  }
+  return null;
+}
+function segCrossesRing(a, b, ring) {
+  for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+    if (segCross(a, b, ring[j], ring[i])) return true;
+  }
+  return false;
+}
+
+// ── Render ──────────────────────────────────────────────────────────────────────
+function drawRoute(coords) {
+  routeLine = L.polyline(coords.map(([lo, la]) => [la, lo]), { color: '#e63946', weight: 3.5, opacity: 0.8, dashArray: '10,7' }).addTo(map);
+  map.fitBounds(routeLine.getBounds().pad(0.12));
+}
+
+function render(hits, from, to, route) {
+  const distMi = Math.round(route.distanceKm * 0.621);
+  const h = Math.floor(route.durationMin / 60), m = Math.round(route.durationMin % 60);
+  $('route-summary').style.display = 'block';
+  $('route-summary').innerHTML = `<strong>${from.name}</strong> &rarr; <strong>${to.name}</strong><br>${distMi} mi &bull; ~${h}h ${m}m &bull; route crosses ${hits.length} native range${hits.length===1?'':'s'}`;
+
+  $('species-count').style.display = 'block';
+  if (!hits.length) {
+    $('species-count').innerHTML = '';
+    $('empty-msg').style.display = 'block';
+    $('empty-msg').textContent = 'No new native cacti — the route doesn’t pass through any range not already on samandersen’s list.';
+    return;
+  }
+  $('species-count').innerHTML = `<b>${hits.length}</b> native cact${hits.length===1?'us':'i'} not yet on samandersen's list`;
+
+  const list = $('species-list');
+  hits.forEach((hit, i) => {
+    const r = hit.range;
+    // draw the range polygon + a marker where the route enters it
+    L.polygon(r.polygon.map(([lo, la]) => [la, lo]), { color: '#f4a261', weight: 1.5, fillColor: '#f4a261', fillOpacity: 0.12 }).addTo(layer);
+    const icon = L.divIcon({ className: '', html: `<div style="width:26px;height:26px;border-radius:50%;background:#f4a261;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;font-family:Georgia,serif;border:2px solid rgba(255,255,255,0.9)">${i+1}</div>`, iconSize: [26,26], iconAnchor: [13,13], popupAnchor: [0,-14] });
+    L.marker([hit.at[1], hit.at[0]], { icon }).addTo(layer)
+      .bindPopup(`<div style="font-family:Georgia,serif"><em style="font-size:13px;color:#2c3e50">${r.display}</em><br><span style="font-size:11px;color:#888">${r.common||''}</span><br><a href="https://www.inaturalist.org/taxa/${r.inatId}" target="_blank" style="font-size:11px;color:#457b9d">iNaturalist &nearr;</a></div>`);
+
+    const card = document.createElement('div');
+    card.className = 'sp-card';
+    card.innerHTML = `<div class="sp-num">${i+1}</div><div class="sp-info">
+      <div class="sp-sci">${r.display}</div>
+      <div class="sp-com">${r.common||''}</div>
+      <a class="sp-link" href="https://www.inaturalist.org/taxa/${r.inatId}" target="_blank">View on iNaturalist &nearr;</a></div>`;
+    card.addEventListener('click', () => map.panTo([hit.at[1], hit.at[0]], { animate: true }));
+    list.appendChild(card);
+  });
+}
+
+// ── Main ──────────────────────────────────────────────────────────────────────
+let running = false;
+async function run() {
+  if (running) return;
+  const a = $('city-a').value.trim(), b = $('city-b').value.trim();
+  if (!a || !b) { alert('Enter both a start and end city.'); return; }
+  if (!ranges.length) { alert('No range data loaded yet. Run build_ranges.py first.'); return; }
+
+  running = true; $('go-btn').disabled = true; showStatus(true); clearAll();
+  try {
+    setProgress(10, 'Geocoding cities…');
+    const [from, to] = await Promise.all([geocode(a), geocode(b)]);
+    setProgress(35, 'Finding driving route…');
+    const route = await getRoute(from, to);
+    drawRoute(route.coords);
+
+    setProgress(70, `Testing route against ${ranges.length} species ranges…`);
+    const hits = [];
+    for (const r of ranges) {
+      if (samSeen.has(r.inatId)) continue;            // already on samandersen's list
+      const at = routeHitsRange(route.coords, r, C.corridorKm);
+      if (at) hits.push({ range: r, at });
+    }
+    // sort by distance along route (west→east-ish): by longitude of entry point
+    hits.sort((p, q) => p.at[0] - q.at[0]);
+
+    setProgress(100, `Done — ${hits.length} native cacti along the route.`);
+    render(hits, from, to, route);
+  } catch (err) {
+    setProgress(0, 'Error: ' + err.message);
+    console.error(err);
+  }
+  running = false; $('go-btn').disabled = false;
+}
+
+$('go-btn').addEventListener('click', run);
+['city-a', 'city-b'].forEach(id => $(id).addEventListener('keydown', e => { if (e.key === 'Enter') run(); }));
+</script>
+</body>
+</html>

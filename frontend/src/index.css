@@ -161,6 +161,23 @@ nav {
 .tile-common { font-size: 0.78rem; color: var(--muted); font-family: sans-serif; margin-top: 2px; }
 .tile-meta { font-size: 0.75rem; color: var(--muted); font-family: sans-serif; margin-top: 6px; }
 
+/* Range distribution thumbnail */
+.range-thumb {
+  width: 100%; display: block;
+  background: var(--sand);
+  border-top: 1px solid var(--sand-border);
+}
+.rt-bg     { fill: #eef2f0; }
+.rt-state  { fill: #fbfaf6; stroke: var(--sand-border); stroke-width: 0.6; }
+.rt-range  { fill: var(--green); fill-opacity: 0.32; stroke: var(--green); stroke-width: 1; stroke-linejoin: round; }
+.rt-none   { fill: var(--muted); font-size: 9px; font-family: sans-serif; opacity: 0.7; }
+.range-thumb-block { margin-top: 0.7rem; }
+.range-thumb-block .rt-label {
+  font-size: 0.68rem; color: var(--muted); font-family: sans-serif;
+  text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 3px;
+}
+.range-thumb-block .range-thumb { border: 1px solid var(--sand-border); border-radius: 6px; }
+
 /* Per-tile mini progress */
 .mini-track {
   height: 5px;

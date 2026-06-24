@@ -29,16 +29,32 @@ export default function RichnessMap() {
     fetch('/xena/richness.json').then(r => r.json()).then(setGrid).catch(() => {})
   }, [])
 
-  // Paint the grid to a canvas and hand Leaflet a data-URL image overlay
+  // Paint the grid to a canvas and hand Leaflet a data-URL image overlay.
+  // The grid is evenly spaced in latitude (plate carrée), but Leaflet shows
+  // Web Mercator and ImageOverlay stretches the image LINEARLY between the
+  // corner coords — so we must resample the rows into Mercator-Y, otherwise
+  // the field drifts/distorts north–south. (Longitude is linear in Mercator.)
   const url = useMemo(() => {
     if (!grid) return null
-    const { nx, ny, data } = grid
+    const { nx, ny, data, res, bbox } = grid
+    const [, S, , N] = bbox
+    const D2R = Math.PI / 180, R2D = 180 / Math.PI
+    const mercY = lat => Math.log(Math.tan(Math.PI / 4 + (lat * D2R) / 2))
+    const invMercY = y => (2 * Math.atan(Math.exp(y)) - Math.PI / 2) * R2D
+    const yN = mercY(N), yS = mercY(S)
+
+    const H = ny * 2                       // extra rows so the north isn't under-sampled
     const cv = document.createElement('canvas')
-    cv.width = nx; cv.height = ny
+    cv.width = nx; cv.height = H
     const ctx = cv.getContext('2d')
-    const img = ctx.createImageData(nx, ny)
-    for (let row = 0; row < ny; row++) {
-      const src = data[ny - 1 - row]      // data rows go south->north; canvas top = north
+    const img = ctx.createImageData(nx, H)
+    for (let row = 0; row < H; row++) {
+      // row 0 = top = north; map evenly through Mercator-Y, invert to latitude
+      const my = yN - (row / (H - 1)) * (yN - yS)
+      const lat = invMercY(my)
+      let j = Math.round((lat - S) / res)  // nearest source row (data is south->north)
+      if (j < 0) j = 0; else if (j > ny - 1) j = ny - 1
+      const src = data[j]
       for (let x = 0; x < nx; x++) {
         const [r, g, b, a] = colorFor(src[x])
         const i = (row * nx + x) * 4

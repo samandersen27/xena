@@ -20,7 +20,8 @@ USERNAME       = "samandersen"
 TAXON_ID       = 47903          # Cactaceae family
 PER_PAGE       = 200
 OUTPUT_PATH    = Path(__file__).parent / "frontend" / "public" / "data.json"
-CHECKLIST_PATH = Path(__file__).parent / "xena_southwest_checklist.txt"
+CHECKLIST_PATH = Path(__file__).parent / "xena_southwest_checklist.txt"   # raw source (reference)
+NATIVES_PATH   = Path(__file__).parent / "natives.csv"                    # refined native checklist
 HEADERS        = {"User-Agent": "Xena-CactusMuseum/0.1"}
 
 PHOTO_SIZES = ("square", "small", "medium", "large", "original")
@@ -30,60 +31,34 @@ PHOTO_SIZES = ("square", "small", "medium", "large", "original")
 
 def load_checklist() -> list:
     """
-    Load the 167-species Desert Southwest master checklist.
-    Returns list of {name, common_name, genus} dicts.
+    Load the refined native checklist from natives.csv — the deduplicated,
+    iNaturalist-aligned list of US Southwest natives. This is the source of
+    truth for the progress denominator and the species tiles:
+      - deduplicated (synonyms collapsed to one iNat-active name)
+      - non-natives are excluded by construction (anything not on this list)
+      - each row carries its resolved iNat taxon ID for range/observation matching
 
-    Strict validation: a line is only accepted as a species row if its
-    first word is a capitalized genus name and second word is a lowercase
-    species epithet, AND the line doesn't contain known prose markers
-    (parentheses, em-dashes, colons) that indicate it's metadata/header text.
+    Returns list of {name, common_name, genus, inat_id} dicts.
     """
-    import re
+    import csv
 
-    if not CHECKLIST_PATH.exists():
-        print(f"  ⚠ Checklist not found at {CHECKLIST_PATH}")
+    if not NATIVES_PATH.exists():
+        print(f"  ⚠ natives.csv not found at {NATIVES_PATH}")
         return []
 
     checklist = []
-    with open(CHECKLIST_PATH, encoding="utf-8") as f:
-        for line in f:
-            line = line.strip()
-            if not line:
+    with open(NATIVES_PATH, encoding="utf-8") as f:
+        for row in csv.DictReader(f):
+            name = (row.get("Botanical name") or "").strip()
+            if not name:
                 continue
-
-            # Reject anything containing prose/metadata markers
-            if any(marker in line for marker in ["(", ")", "—", ":", "http", "TOTAL", "Source"]):
-                continue
-
-            # Reject obvious header/section lines
-            if any(line.startswith(p) for p in [
-                "XENA", "=", "-", "METHODOLOGY", "Included", "Excluded",
-                "Scientific", "This is", "Desert Southwest:"
-            ]):
-                continue
-
-            # Split on 2+ spaces (column separator)
-            parts = re.split(r'  +', line)
-            parts = [p.strip() for p in parts if p.strip()]
-            if len(parts) < 1:
-                continue
-
-            name = parts[0]
-            words = name.split()
-
-            # Strict binomial check: exactly 2 words (allow hyphenated epithets
-            # like "mesae-verdae" or "boyce-thompsonii"), genus capitalized,
-            # epithet lowercase, both alphabetic (plus hyphens).
-            if len(words) != 2:
-                continue
-            genus_word, epithet_word = words
-            if not re.match(r'^[A-Z][a-z]+$', genus_word):
-                continue
-            if not re.match(r'^[a-z][a-z\-]*$', epithet_word):
-                continue
-
-            common = parts[1] if len(parts) > 1 else ""
-            checklist.append({"name": name, "common_name": common, "genus": genus_word})
+            id_raw = (row.get("iNat ID") or "").strip()
+            checklist.append({
+                "name":        name,
+                "common_name": (row.get("Common name") or "").strip(),
+                "genus":       (row.get("Genus") or name.split()[0]).strip(),
+                "inat_id":     int(id_raw) if id_raw.isdigit() else None,
+            })
 
     return checklist
 
@@ -216,11 +191,12 @@ def main():
     print(f"\n🌵 Xena sync — {USERNAME}")
     print(f"   Output: {OUTPUT_PATH}\n")
 
-    # Load master checklist
+    # Load refined native checklist (natives.csv)
     checklist = load_checklist()
     total_sw_species = len(checklist)
     checklist_names  = {c["name"].lower() for c in checklist}
-    print(f"  Checklist loaded: {total_sw_species} Desert Southwest species\n")
+    checklist_ids    = {c["inat_id"] for c in checklist if c.get("inat_id")}
+    print(f"  Checklist loaded: {total_sw_species} native Southwest species\n")
 
     # Build per-genus totals from checklist
     checklist_by_genus = defaultdict(list)
@@ -336,14 +312,25 @@ def main():
         if obs["taxon_inat_id"]:
             species_obs[obs["taxon_inat_id"]].append(obs)
 
-    # Cross-reference observed species against checklist
-    observed_names = {
-        t["name"].lower()
-        for t in taxa
-        if t.get("rank") == "species"
+    # Cross-reference observed species against the native checklist.
+    # A checklist species counts as observed if Sam has a real observation
+    # whose taxon matches it by iNat ID or by name (covers genus-renamed taxa).
+    observed_ids = {
+        t["inat_id"] for t in taxa
+        if t.get("inat_id") and len(species_obs.get(t["inat_id"], [])) > 0
     }
-    checklist_observed = observed_names & checklist_names
-    checklist_remaining = checklist_names - observed_names
+    observed_names = {
+        t["name"].lower() for t in taxa
+        if t.get("rank") == "species" and len(species_obs.get(t["inat_id"], [])) > 0
+    }
+    matched = [
+        c for c in checklist
+        if (c.get("inat_id") and c["inat_id"] in observed_ids)
+        or c["name"].lower() in observed_names
+    ]
+    n_matched = len(matched)
+    checklist_observed = {c["name"].lower() for c in matched}      # back-compat
+    checklist_remaining = checklist_names - checklist_observed
 
     # Per-genus progress using checklist as denominator
     genus_map = defaultdict(lambda: {
@@ -398,10 +385,10 @@ def main():
 
     progress = {
         "species_observed":      unique_species,
-        "checklist_total":       total_sw_species,       # 167 — the real denominator
-        "checklist_matched":     len(checklist_observed), # how many of your obs are on the list
-        "checklist_remaining":   len(checklist_remaining),
-        "pct_complete":          round(len(checklist_observed) / total_sw_species * 100, 1),
+        "checklist_total":       total_sw_species,        # refined native list — the real denominator
+        "checklist_matched":     n_matched,               # native checklist species you've observed
+        "checklist_remaining":   total_sw_species - n_matched,
+        "pct_complete":          round(n_matched / total_sw_species * 100, 1) if total_sw_species else 0,
         "total_observations":    total_obs,
         "research_grade":        research_grade,
         "field_days":            field_days,
@@ -437,7 +424,7 @@ def main():
         "genera":       genera,
         "taxa":         taxa,
         "observations": observations,
-        "checklist":    checklist,   # full 167-species list for the frontend
+        "checklist":    checklist,   # refined native list (name, common, genus, inat_id)
     }
 
     OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)

@@ -105,7 +105,7 @@ export default function GenusDetail() {
                     {c.common_name && <div className="tile-common">{c.common_name}</div>}
                     <div className="range-thumb-block">
                       <div className="rt-label">Native range</div>
-                      <RangeThumb range={ranges.byName[(c.name||'').toLowerCase()]} states={swStates} />
+                      <RangeThumb range={ranges.byId[String(c.inat_id)] || ranges.byName[(c.name||'').toLowerCase()]} states={swStates} />
                     </div>
                   </div>
                 </div>

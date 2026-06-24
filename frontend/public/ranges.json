@@ -1,5 +1,5 @@
 {
-  "built_at": "2026-06-23T23:55:28Z",
+  "built_at": "2026-06-24T17:32:33Z",
   "ranges": {
     "157908": {
       "taxon_name": "Acanthocereus tetragonus",
@@ -697,7 +697,7 @@
     },
     "143721": {
       "taxon_name": "Escobaria alversonii",
-      "display_name": "Coryphantha alversonii",
+      "display_name": "Escobaria alversonii",
       "source_points": 1200,
       "kept_points": 1198,
       "outliers_removed": 2,
@@ -776,7 +776,7 @@
     },
     "868396": {
       "taxon_name": "Escobaria chlorantha",
-      "display_name": "Coryphantha chlorantha",
+      "display_name": "Escobaria chlorantha",
       "source_points": 1200,
       "kept_points": 1183,
       "outliers_removed": 17,
@@ -843,7 +843,7 @@
     },
     "162728": {
       "taxon_name": "Escobaria dasyacantha",
-      "display_name": "Coryphantha dasyacantha",
+      "display_name": "Escobaria dasyacantha",
       "source_points": 216,
       "kept_points": 216,
       "outliers_removed": 0,
@@ -910,7 +910,7 @@
     },
     "274340": {
       "taxon_name": "Escobaria duncanii",
-      "display_name": "Coryphantha duncanii",
+      "display_name": "Escobaria duncanii",
       "source_points": 50,
       "kept_points": 50,
       "outliers_removed": 0,
@@ -1115,7 +1115,7 @@
     },
     "162733": {
       "taxon_name": "Escobaria missouriensis",
-      "display_name": "Coryphantha missouriensis",
+      "display_name": "Escobaria missouriensis",
       "source_points": 1200,
       "kept_points": 1200,
       "outliers_removed": 0,
@@ -1470,7 +1470,7 @@
     },
     "162738": {
       "taxon_name": "Escobaria sneedii",
-      "display_name": "Coryphantha sneedii",
+      "display_name": "Escobaria sneedii",
       "source_points": 596,
       "kept_points": 566,
       "outliers_removed": 30,
@@ -1604,7 +1604,7 @@
     },
     "162739": {
       "taxon_name": "Escobaria tuberculosa",
-      "display_name": "Coryphantha tuberculosa",
+      "display_name": "Escobaria tuberculosa",
       "source_points": 1200,
       "kept_points": 1200,
       "outliers_removed": 0,
@@ -1679,7 +1679,7 @@
     },
     "148405": {
       "taxon_name": "Escobaria vivipara",
-      "display_name": "Coryphantha vivipara",
+      "display_name": "Escobaria vivipara",
       "source_points": 1200,
       "kept_points": 1200,
       "outliers_removed": 0,
@@ -3444,7 +3444,7 @@
     },
     "870496": {
       "taxon_name": "Homalocephala texensis",
-      "display_name": "Echinocactus texensis",
+      "display_name": "Homalocephala texensis",
       "source_points": 1200,
       "kept_points": 1200,
       "outliers_removed": 0,
@@ -3637,7 +3637,7 @@
     },
     "438545": {
       "taxon_name": "Echinocereus chisosensis",
-      "display_name": "Echinocereus chisoensis",
+      "display_name": "Echinocereus chisosensis",
       "source_points": 37,
       "kept_points": 37,
       "outliers_removed": 0,
@@ -5697,7 +5697,7 @@
     },
     "162736": {
       "taxon_name": "Escobaria robbinsiorum",
-      "display_name": "Escobaria robbinsorum",
+      "display_name": "Escobaria robbinsiorum",
       "source_points": 32,
       "kept_points": 31,
       "outliers_removed": 1,
@@ -6000,7 +6000,7 @@
     },
     "855937": {
       "taxon_name": "Hamatocactus hamatacanthus",
-      "display_name": "Ferocactus hamatacanthus",
+      "display_name": "Hamatocactus hamatacanthus",
       "source_points": 1200,
       "kept_points": 1200,
       "outliers_removed": 0,
@@ -6666,7 +6666,7 @@
     },
     "1039181": {
       "taxon_name": "Micropuntia pulchella",
-      "display_name": "Grusonia pulchella",
+      "display_name": "Micropuntia pulchella",
       "source_points": 632,
       "kept_points": 632,
       "outliers_removed": 0,
@@ -6824,7 +6824,7 @@
     },
     "169680": {
       "taxon_name": "Thelocactus bicolor",
-      "display_name": "Hamatocactus bicolor",
+      "display_name": "Thelocactus bicolor",
       "source_points": 1200,
       "kept_points": 1200,
       "outliers_removed": 0,
@@ -6891,7 +6891,7 @@
     },
     "870498": {
       "taxon_name": "Homalocephala polycephala",
-      "display_name": "Homalocephala polycephalus",
+      "display_name": "Homalocephala polycephala",
       "source_points": 1200,
       "kept_points": 1200,
       "outliers_removed": 0,
@@ -7013,7 +7013,7 @@
     },
     "1550572": {
       "taxon_name": "Cochemiea barbata",
-      "display_name": "Mammillaria barbata",
+      "display_name": "Cochemiea barbata",
       "source_points": 344,
       "kept_points": 344,
       "outliers_removed": 0,
@@ -7226,7 +7226,7 @@
     },
     "1544330": {
       "taxon_name": "Cochemiea mainiae",
-      "display_name": "Mammillaria mainiae",
+      "display_name": "Cochemiea mainiae",
       "source_points": 114,
       "kept_points": 110,
       "outliers_removed": 4,
@@ -7553,7 +7553,7 @@
     },
     "1544320": {
       "taxon_name": "Cochemiea thornberi",
-      "display_name": "Mammillaria thornberi",
+      "display_name": "Cochemiea thornberi",
       "source_points": 109,
       "kept_points": 101,
       "outliers_removed": 8,
@@ -7604,7 +7604,7 @@
     },
     "1550579": {
       "taxon_name": "Cochemiea wrightii",
-      "display_name": "Mammillaria wrightii",
+      "display_name": "Cochemiea wrightii",
       "source_points": 420,
       "kept_points": 420,
       "outliers_removed": 0,
@@ -9345,7 +9345,7 @@
     },
     "165901": {
       "taxon_name": "Opuntia santa-rita",
-      "display_name": "Opuntia santarita",
+      "display_name": "Opuntia santa-rita",
       "source_points": 598,
       "kept_points": 520,
       "outliers_removed": 78,
@@ -11266,7 +11266,7 @@
     },
     "856004": {
       "taxon_name": "Hamatocactus setispinus",
-      "display_name": "Thelocactus setispinus",
+      "display_name": "Hamatocactus setispinus",
       "source_points": 1200,
       "kept_points": 1198,
       "outliers_removed": 2,

@@ -4,6 +4,7 @@
 
 import { useNavigate } from 'react-router-dom'
 import Nav from '../components/Nav'
+import RichnessMap from '../components/RichnessMap'
 
 export function AddObservation() {
   const navigate = useNavigate()
@@ -47,6 +48,20 @@ export function Curiosity() {
         <p style={{ color: 'var(--muted)', fontFamily: 'sans-serif', fontSize: '0.9rem', marginBottom: '1.5rem' }}>
           Home for special studies — saguaro bifurcation, opuntia pad characterization, and whatever else seems interesting along the way.
         </p>
+
+        {/* Species richness contour map */}
+        <div className="section-head" style={{ marginTop: 0 }}>
+          <h2>Species richness</h2>
+          <span className="section-count">overlapping native ranges · SW states</span>
+        </div>
+        <p style={{ color: 'var(--muted)', fontFamily: 'sans-serif', fontSize: '0.83rem', marginBottom: '0.9rem' }}>
+          How many native cactus ranges overlap each spot, counted from the iNaturalist range polygons. Warmer = more species share that ground.
+        </p>
+        <RichnessMap />
+
+        <div className="section-head">
+          <h2>Studies</h2>
+        </div>
         <div className="tile-grid">
           {[
             { title: 'Saguaro bifurcation', desc: 'Record and map crested saguaros across the Sonoran Desert.' },

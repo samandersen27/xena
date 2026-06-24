@@ -57,7 +57,17 @@ export function Curiosity() {
         <p style={{ color: 'var(--muted)', fontFamily: 'sans-serif', fontSize: '0.83rem', marginBottom: '0.9rem' }}>
           How many native cactus ranges overlap each spot, counted from the iNaturalist range polygons. Warmer = more species share that ground.
         </p>
-        <RichnessMap />
+        <RichnessMap label="Native species overlapping:" />
+
+        {/* Splitter's Opuntia diversity */}
+        <div className="section-head">
+          <h2>Splitter's Opuntia diversity</h2>
+          <span className="section-count">Opuntia Web species also on iNaturalist</span>
+        </div>
+        <p style={{ color: 'var(--muted)', fontFamily: 'sans-serif', fontSize: '0.83rem', marginBottom: '0.9rem' }}>
+          The same overlap count, but restricted to prickly-pears recognized by <a href="https://www.opuntiads.com/" target="_blank" rel="noreferrer">Opuntia Web</a> that iNaturalist also treats as valid species — a finely-split view of where <em>Opuntia</em> diversity concentrates.
+        </p>
+        <RichnessMap src="/xena/opuntia_richness.json" label="Opuntia species overlapping:" />
 
         <div className="section-head">
           <h2>Studies</h2>

@@ -5,7 +5,8 @@ import { DataProvider } from './lib/data'
 import Home from './pages/Home'
 import GenusDetail from './pages/GenusDetail'
 import SpeciesDetail from './pages/SpeciesDetail'
-import { AddObservation, FieldTrips, Curiosity } from './pages/Other'
+import { AddObservation, Curiosity } from './pages/Other'
+import FieldTrips from './pages/FieldTrips'
 import './index.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(

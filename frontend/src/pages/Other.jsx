@@ -38,20 +38,6 @@ export function AddObservation() {
   )
 }
 
-export function FieldTrips() {
-  return (
-    <>
-      <Nav />
-      <div className="page">
-        <h1 style={{ marginBottom: '0.5rem' }}>Field trips</h1>
-        <p style={{ color: 'var(--muted)', fontFamily: 'sans-serif', fontSize: '0.9rem' }}>
-          Coming soon — group your observations into named outings and view per-trip species tallies and route maps.
-        </p>
-      </div>
-    </>
-  )
-}
-
 export function Curiosity() {
   return (
     <>

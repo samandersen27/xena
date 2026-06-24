@@ -243,6 +243,15 @@ nav {
   border: 1px solid var(--sand-border);
 }
 
+/* Field trips route-finder inputs */
+.ft-input {
+  width: 100%; padding: 7px 10px;
+  border: 1px solid var(--sand-border); border-radius: 6px;
+  background: var(--sand); color: var(--text);
+  font-size: 0.86rem; font-family: sans-serif; outline: none;
+}
+.ft-input:focus { border-color: var(--green); }
+
 /* ── Form ────────────────────────────────────────────────────────────────── */
 .form-group { margin-bottom: 1rem; }
 .form-group label { display: block; font-size: 0.82rem; color: var(--muted); font-family: sans-serif; margin-bottom: 4px; }

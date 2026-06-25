@@ -19,7 +19,8 @@ import numpy as np
 from matplotlib.path import Path as MplPath
 
 from build_ranges import (
-    api_taxa, fetch_community_coords, grubbs_filter, convex_hull,
+    api_taxa, fetch_community_coords, grubbs_filter,
+    get_land_mask, refined_polygons,
     COORDS_CACHE, CACTACEAE, SLEEP, MIN_POINTS_FOR_HULL,
 )
 
@@ -106,8 +107,8 @@ def resolve_opuntia(epithets, cache):
 
 def build_ranges(species):
     coords_cache = load_json(COORDS_CACHE, {})
-    prev = load_json(RANGES_OUT, {}).get("ranges", {})
-    ranges = dict(prev)
+    land = get_land_mask()
+    ranges = {}
     items = list(species.items())
     for i, (tid, name) in enumerate(items, 1):
         ck = str(tid)
@@ -127,19 +128,20 @@ def build_ranges(species):
         if len(coords) < MIN_POINTS_FOR_HULL:
             print("    ! too few points", flush=True); continue
         kept, removed = grubbs_filter(coords)
-        hull = convex_hull(kept)
-        if hull is None:
+        rings = refined_polygons(kept, land)
+        if not rings:
             print("    ! degenerate hull", flush=True); continue
-        xs = [p[0] for p in kept]; ys = [p[1] for p in kept]
+        rx = [x for r in rings for x, _ in r]; ry = [y for r in rings for _, y in r]
+        kxs = [p[0] for p in kept]; kys = [p[1] for p in kept]
         ranges[str(tid)] = {
             "taxon_name": name, "display_name": name,
             "source_points": len(coords), "kept_points": len(kept),
             "outliers_removed": removed,
-            "polygon": [[round(x, 5), round(y, 5)] for x, y in hull],
-            "bbox": [round(min(xs), 5), round(min(ys), 5), round(max(xs), 5), round(max(ys), 5)],
-            "centroid": [round(sum(xs)/len(xs), 5), round(sum(ys)/len(ys), 5)],
+            "polygons": rings, "polygon": rings[0],
+            "bbox": [round(min(rx), 5), round(min(ry), 5), round(max(rx), 5), round(max(ry), 5)],
+            "centroid": [round(sum(kxs)/len(kxs), 5), round(sum(kys)/len(kys), 5)],
         }
-        print(f"    OK {len(coords)}->{len(kept)} pts ({removed} outliers), {len(hull)} vtx", flush=True)
+        print(f"    OK {len(coords)}->{len(kept)} pts ({removed} outliers), {len(rings)} poly(s)", flush=True)
         if i % 8 == 0:
             RANGES_OUT.write_text(json.dumps({"ranges": ranges}, indent=2), encoding="utf-8")
     RANGES_OUT.write_text(json.dumps({"ranges": ranges}, indent=2), encoding="utf-8")
@@ -155,9 +157,11 @@ def build_richness(ranges):
     pts = np.column_stack([X.ravel(), Y.ravel()])
     counts = np.zeros(pts.shape[0], dtype=np.int32)
     for r in ranges.values():
-        poly = r.get("polygon")
-        if poly and len(poly) >= 4:
-            counts += MplPath(poly).contains_points(pts)
+        inside = np.zeros(pts.shape[0], dtype=bool)
+        for ring in r.get("polygons") or [r.get("polygon")]:
+            if ring and len(ring) >= 4:
+                inside |= MplPath(ring).contains_points(pts)
+        counts += inside
     inside = np.zeros(pts.shape[0], dtype=bool)
     for s in states:
         for ring in s.get("rings", []):

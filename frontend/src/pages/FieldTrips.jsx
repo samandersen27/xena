@@ -38,7 +38,6 @@ function distPointToSegKm(p, a, b) {
   return Math.sqrt((dx * cosLat) ** 2 + dy ** 2) * KM_PER_DEG
 }
 function routeHitsRange(route, range, tolKm) {
-  const ring = range.polygon
   const [minX, minY, maxX, maxY] = range.bbox
   const pad = tolKm / KM_PER_DEG + 0.01
   let rMinX = Infinity, rMinY = Infinity, rMaxX = -Infinity, rMaxY = -Infinity
@@ -47,14 +46,17 @@ function routeHitsRange(route, range, tolKm) {
     if (p[1] < rMinY) rMinY = p[1]; if (p[1] > rMaxY) rMaxY = p[1]
   }
   if (rMaxX < minX - pad || rMinX > maxX + pad || rMaxY < minY - pad || rMinY > maxY + pad) return null
-  for (let i = 0; i < route.length; i++) {
-    if (pointInRing(route[i], ring)) return route[i]
-    if (i > 0 && segCrossesRing(route[i - 1], route[i], ring)) return route[i]
-  }
-  if (tolKm > 0) {
-    for (const v of ring)
-      for (let i = 1; i < route.length; i++)
-        if (distPointToSegKm(v, route[i - 1], route[i]) <= tolKm) return v
+  const rings = range.polygons || [range.polygon]
+  for (const ring of rings) {
+    for (let i = 0; i < route.length; i++) {
+      if (pointInRing(route[i], ring)) return route[i]
+      if (i > 0 && segCrossesRing(route[i - 1], route[i], ring)) return route[i]
+    }
+    if (tolKm > 0) {
+      for (const v of ring)
+        for (let i = 1; i < route.length; i++)
+          if (distPointToSegKm(v, route[i - 1], route[i]) <= tolKm) return v
+    }
   }
   return null
 }
@@ -226,10 +228,12 @@ export default function FieldTrips() {
                 <FitBounds coords={result.route.coords} />
                 <Polyline positions={result.route.coords.map(([lo, la]) => [la, lo])}
                   pathOptions={{ color: '#b5402f', weight: 3.5, opacity: 0.8, dashArray: '10,7' }} />
-                {result.hits.map(hit => (
-                  <Polygon key={'p' + hit.id} positions={hit.range.polygon.map(([lo, la]) => [la, lo])}
-                    pathOptions={{ color: '#c2772f', weight: 1.5, fillColor: '#c2772f', fillOpacity: 0.12 }} />
-                ))}
+                {result.hits.flatMap(hit =>
+                  (hit.range.polygons || [hit.range.polygon]).map((ring, k) => (
+                    <Polygon key={'p' + hit.id + '-' + k} positions={ring.map(([lo, la]) => [la, lo])}
+                      pathOptions={{ color: '#c2772f', weight: 1.5, fillColor: '#c2772f', fillOpacity: 0.12 }} />
+                  ))
+                )}
                 {result.hits.map((hit, i) => (
                   <Marker key={'m' + hit.id} position={[hit.at[1], hit.at[0]]} icon={numIcon(i + 1)}>
                     <Popup>

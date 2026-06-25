@@ -115,7 +115,8 @@ function clearAll() {
       inatId: parseInt(id, 10),
       display: r.display_name || r.taxon_name,
       common: '',
-      polygon: r.polygon,        // [[lng,lat], ...] closed ring
+      polygon: r.polygon,        // largest ring (back-compat)
+      polygons: r.polygons || [r.polygon],   // one or more land-clipped rings
       bbox: r.bbox,              // [minLng,minLat,maxLng,maxLat]
       centroid: r.centroid,      // [lng,lat]
     }));
@@ -192,7 +193,6 @@ function distPointToSeg(p, a, b) {
 }
 
 function routeHitsRange(route, r, tolKm) {
-  const ring = r.polygon;
   const [minX, minY, maxX, maxY] = r.bbox;
   const pad = tolKm / KM_PER_DEG + 0.01;
   // bbox cull
@@ -200,16 +200,17 @@ function routeHitsRange(route, r, tolKm) {
   for (const p of route){ if(p[0]<rMinX)rMinX=p[0]; if(p[0]>rMaxX)rMaxX=p[0]; if(p[1]<rMinY)rMinY=p[1]; if(p[1]>rMaxY)rMaxY=p[1]; }
   if (rMaxX < minX-pad || rMinX > maxX+pad || rMaxY < minY-pad || rMinY > maxY+pad) return null;
 
-  for (let i = 0; i < route.length; i++) {
-    const p = route[i];
-    if (pointInRing(p, ring)) return p;                       // route vertex inside range
-    if (i > 0 && segCrossesRing(route[i-1], p, ring)) return p; // segment crosses boundary
-  }
-  // near miss within tolerance: closest approach of any route segment to any ring vertex
-  if (tolKm > 0) {
-    for (const v of ring) {
-      for (let i = 1; i < route.length; i++) {
-        if (distPointToSeg(v, route[i-1], route[i]) <= tolKm) return v;
+  for (const ring of (r.polygons || [r.polygon])) {
+    for (let i = 0; i < route.length; i++) {
+      const p = route[i];
+      if (pointInRing(p, ring)) return p;                       // route vertex inside range
+      if (i > 0 && segCrossesRing(route[i-1], p, ring)) return p; // segment crosses boundary
+    }
+    if (tolKm > 0) {
+      for (const v of ring) {
+        for (let i = 1; i < route.length; i++) {
+          if (distPointToSeg(v, route[i-1], route[i]) <= tolKm) return v;
+        }
       }
     }
   }
@@ -247,7 +248,8 @@ function render(hits, from, to, route) {
   hits.forEach((hit, i) => {
     const r = hit.range;
     // draw the range polygon + a marker where the route enters it
-    L.polygon(r.polygon.map(([lo, la]) => [la, lo]), { color: '#f4a261', weight: 1.5, fillColor: '#f4a261', fillOpacity: 0.12 }).addTo(layer);
+    (r.polygons || [r.polygon]).forEach(ring =>
+      L.polygon(ring.map(([lo, la]) => [la, lo]), { color: '#f4a261', weight: 1.5, fillColor: '#f4a261', fillOpacity: 0.12 }).addTo(layer));
     const icon = L.divIcon({ className: '', html: `<div style="width:26px;height:26px;border-radius:50%;background:#f4a261;color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:11px;font-family:Georgia,serif;border:2px solid rgba(255,255,255,0.9)">${i+1}</div>`, iconSize: [26,26], iconAnchor: [13,13], popupAnchor: [0,-14] });
     L.marker([hit.at[1], hit.at[0]], { icon }).addTo(layer)
       .bindPopup(`<div style="font-family:Georgia,serif"><em style="font-size:13px;color:#2c3e50">${r.display}</em><br><span style="font-size:11px;color:#888">${r.common||''}</span><br><a href="https://www.inaturalist.org/taxa/${r.inatId}" target="_blank" style="font-size:11px;color:#457b9d">iNaturalist &nearr;</a></div>`);

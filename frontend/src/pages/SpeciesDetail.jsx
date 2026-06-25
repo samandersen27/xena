@@ -91,14 +91,15 @@ export default function SpeciesDetail() {
   if (!taxon) return <><Nav /><div className="page loading">Loading…</div></>
 
   const withCoords = observations.filter(o => o.latitude && o.longitude)
-  // Range polygon arrives as [lng, lat]; Leaflet wants [lat, lng]
-  const rangeLatLng = range?.polygon?.map(([lng, lat]) => [lat, lng]) ?? null
+  // Range arrives as one or more rings of [lng, lat]; Leaflet wants [lat, lng]
+  const rangeRings = (range?.polygons || (range?.polygon ? [range.polygon] : null))
+    ?.map(ring => ring.map(([lng, lat]) => [lat, lng])) ?? null
   const center     = withCoords.length
     ? [withCoords[0].latitude, withCoords[0].longitude]
     : range
       ? [range.centroid[1], range.centroid[0]]
       : [33.5, -112.0]
-  const showMap    = withCoords.length > 0 || rangeLatLng
+  const showMap    = withCoords.length > 0 || rangeRings
 
   return (
     <>
@@ -141,9 +142,10 @@ export default function SpeciesDetail() {
                     attribution='© <a href="https://openstreetmap.org">OpenStreetMap</a> · range from <a href="https://inaturalist.org">iNaturalist</a>'
                     url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                   />
-                  {rangeLatLng && (
+                  {rangeRings && rangeRings.map((ring, i) => (
                     <Polygon
-                      positions={rangeLatLng}
+                      key={i}
+                      positions={ring}
                       pathOptions={{ color: '#3a7d44', weight: 1.5, fillColor: '#3a7d44', fillOpacity: 0.15 }}
                     >
                       <Popup>
@@ -152,7 +154,7 @@ export default function SpeciesDetail() {
                         {range.outliers_removed > 0 && ` (${range.outliers_removed} outliers removed)`}
                       </Popup>
                     </Polygon>
-                  )}
+                  ))}
                   {withCoords.map(o => (
                     <CircleMarker
                       key={o.id}

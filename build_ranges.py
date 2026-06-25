@@ -23,6 +23,9 @@ from pathlib import Path
 
 import numpy as np
 from scipy import stats
+import shapely
+from shapely.geometry import MultiPoint, box, shape
+from shapely.ops import unary_union
 
 HERE        = Path(__file__).parent
 DATA_PATH   = HERE / "frontend" / "public" / "data.json"
@@ -36,6 +39,52 @@ MIN_POINTS_FOR_HULL  = 3
 MIN_POINTS_FOR_GRUBBS = 7      # below this, keep every point (sample too small)
 MAX_OBS_PER_SPECIES   = 1200
 GRUBBS_ALPHA = 0.05
+
+# Refined-hull recipe: concave hull, then clip to land so over-water "teeth"
+# vanish and offshore islands become their own polygons.
+CONCAVE_RATIO = 0.30
+MIN_RING_AREA = 0.0004          # deg^2 — drop tiny coastline slivers
+LAND_CACHE    = HERE / "land_mask.wkt"
+LAND_URL      = "https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_50m_land.geojson"
+NA_BBOX       = (-128.0, 18.0, -80.0, 50.0)   # continental US + N. Mexico margin
+
+
+def get_land_mask():
+    """North-America land polygon (Natural Earth 50m, incl. Channel Islands),
+    cached locally. One non-iNat download, then reused."""
+    if LAND_CACHE.exists():
+        return shapely.from_wkt(LAND_CACHE.read_text(encoding="utf-8"))
+    print("  downloading Natural Earth land mask (one-time)…", flush=True)
+    data = json.loads(urllib.request.urlopen(
+        urllib.request.Request(LAND_URL, headers=HEADERS), timeout=180).read())
+    bb = box(*NA_BBOX)
+    parts = [shape(f["geometry"]).intersection(bb) for f in data["features"]
+             if shape(f["geometry"]).intersects(bb)]
+    land = unary_union([p for p in parts if not p.is_empty])
+    LAND_CACHE.write_text(land.wkt, encoding="utf-8")
+    return land
+
+
+def refined_polygons(points, land, ratio=CONCAVE_RATIO, minarea=MIN_RING_AREA):
+    """Grubbs-filtered points -> concave hull clipped to land -> list of
+    exterior rings (largest first). Islands come back as separate rings."""
+    mp = MultiPoint([tuple(p) for p in points])
+    hull = shapely.concave_hull(mp, ratio=ratio)
+    if not hull.is_valid:
+        hull = hull.buffer(0)
+    clipped = hull.intersection(land) if land is not None else hull
+    if clipped.is_empty:
+        clipped = hull                      # fully offshore? keep unclipped
+    clipped = clipped.simplify(0.002)
+    geoms = clipped.geoms if clipped.geom_type in ("MultiPolygon", "GeometryCollection") else [clipped]
+    polys = [g for g in geoms if g.geom_type == "Polygon" and g.exterior]
+    polys.sort(key=lambda p: -p.area)
+    rings = [[[round(x, 5), round(y, 5)] for x, y in p.exterior.coords]
+             for p in polys if p.area >= minarea]
+    if not rings and polys:                 # all slivers -> keep the largest
+        p = polys[0]
+        rings = [[[round(x, 5), round(y, 5)] for x, y in p.exterior.coords]]
+    return rings
 
 # ── Taxonomy: map checklist names to iNat-active taxa ─────────────────────────
 # (Mirrors build_natives_csv.py — iNat's taxonomy, not POWO's.)
@@ -264,9 +313,9 @@ def main():
             "ranges": ranges,
         }, indent=2), encoding="utf-8")
 
-    # 2-4) Fetch, Grubbs-filter, hull
-    prev = load_json(RANGES_PATH, {})
-    ranges = prev.get("ranges", {}) or {}     # resume any previously-built ranges
+    # 2-4) Fetch, Grubbs-filter, refined hull (concave + land clip)
+    land = get_land_mask()
+    ranges = {}                               # rebuild fresh (cheap from cache)
     items = list(resolved.items())
     for i, (tid, meta) in enumerate(items, 1):
         name = meta["name"]
@@ -292,25 +341,27 @@ def main():
             continue
 
         kept, removed = grubbs_filter(coords)
-        hull = convex_hull(kept)
-        if hull is None:
+        rings = refined_polygons(kept, land)
+        if not rings:
             print("    ! degenerate hull, skipping", flush=True)
             continue
 
-        xs = [p[0] for p in kept]; ys = [p[1] for p in kept]
+        rx = [x for r in rings for x, _ in r]; ry = [y for r in rings for _, y in r]
+        kxs = [p[0] for p in kept]; kys = [p[1] for p in kept]
         ranges[str(tid)] = {
             "taxon_name":      meta["inat_name"] or name,
             "display_name":    name,
             "source_points":   len(coords),
             "kept_points":     len(kept),
             "outliers_removed": removed,
-            "polygon":         [[round(x, 5), round(y, 5)] for x, y in hull],
-            "bbox":            [round(min(xs), 5), round(min(ys), 5),
-                                round(max(xs), 5), round(max(ys), 5)],
-            "centroid":        [round(sum(xs)/len(xs), 5), round(sum(ys)/len(ys), 5)],
+            "polygons":        rings,                # one or more exterior rings (land-clipped)
+            "polygon":         rings[0],             # largest ring (back-compat)
+            "bbox":            [round(min(rx), 5), round(min(ry), 5),
+                                round(max(rx), 5), round(max(ry), 5)],
+            "centroid":        [round(sum(kxs)/len(kxs), 5), round(sum(kys)/len(kys), 5)],
         }
         print(f"    OK {len(coords)}->{len(kept)} pts ({removed} outliers), "
-              f"{len(hull)}-vertex hull", flush=True)
+              f"{len(rings)} polygon(s)", flush=True)
 
         if i % 8 == 0:         # frequent checkpoint — background procs die ~35min
             save_ranges()

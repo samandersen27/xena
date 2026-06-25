@@ -31,8 +31,10 @@ export default function RangeThumb({ range, states = [], height = 92 }) {
           <polygon key={`${i}-${j}`} points={toPts(ring)} className="rt-state" />
         ))
       )}
-      {range?.polygon
-        ? <polygon points={toPts(range.polygon)} className="rt-range" />
+      {(range?.polygons || (range?.polygon ? [range.polygon] : null))
+        ? (range.polygons || [range.polygon]).map((ring, i) => (
+            <polygon key={i} points={toPts(ring)} className="rt-range" />
+          ))
         : <text x={W / 2} y={H / 2} className="rt-none" textAnchor="middle">no range data</text>
       }
     </svg>

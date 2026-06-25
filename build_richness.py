@@ -38,9 +38,11 @@ def main():
     # Species richness: how many range polygons contain each grid point
     counts = np.zeros(pts.shape[0], dtype=np.int32)
     for r in ranges.values():
-        poly = r.get("polygon")
-        if poly and len(poly) >= 4:
-            counts += MplPath(poly).contains_points(pts)
+        inside = np.zeros(pts.shape[0], dtype=bool)
+        for ring in r.get("polygons") or [r.get("polygon")]:
+            if ring and len(ring) >= 4:
+                inside |= MplPath(ring).contains_points(pts)
+        counts += inside
 
     # Mask to the SW states only
     inside = np.zeros(pts.shape[0], dtype=bool)

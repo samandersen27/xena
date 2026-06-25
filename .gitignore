@@ -7,3 +7,6 @@ coords_cache.json
 taxon_ids.json
 *.log
 opuntia_ids.json
+
+_land_socal.wkt
+_*.png

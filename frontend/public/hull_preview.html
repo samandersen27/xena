@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>SoCal Opuntia — hull comparison</title>
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<style>
+  html,body{margin:0;height:100%;font-family:Georgia,serif}
+  #map{height:100%}
+  .panel{background:rgba(255,255,255,.95);padding:10px 12px;border-radius:6px;border:1px solid #ccc;font-size:13px;line-height:1.6;box-shadow:0 1px 5px rgba(0,0,0,.25)}
+  .panel h4{margin:0 0 6px;font-size:13px}
+  .panel label{display:block;cursor:pointer;font-family:sans-serif;font-size:12px}
+  .panel .sp{font-style:italic}
+  .swatch{display:inline-block;width:12px;height:12px;border-radius:2px;margin-right:5px;vertical-align:-1px}
+  .note{font-family:sans-serif;font-size:11px;color:#666;margin-top:6px}
+</style>
+</head>
+<body>
+<div id="map"></div>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script>
+const map = L.map('map').setView([34, -118.5], 8);
+L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+  {attribution:'Tiles &copy; Esri', maxZoom:18}).addTo(map);
+L.tileLayer('https://{s}.basemaps.cartocdn.com/light_only_labels/{z}/{x}/{y}{r}.png',
+  {attribution:'&copy; CARTO', maxZoom:18, opacity:0.9}).addTo(map);
+setTimeout(()=>map.invalidateSize(), 300);   // in case the panel sized late
+
+fetch('./hull_preview.json').then(r=>r.json()).then(DB=>{
+  const [W,S,E,N]=DB.bbox;
+  map.fitBounds([[S,W],[N,E]]);
+
+  // layer groups: convex, c20, c30, c40, points
+  const KEYS = [['convex','Convex hull'],['c20','Concave ratio 0.2'],['c30','Concave ratio 0.3'],['c40','Concave ratio 0.4']];
+  const groups = {};
+  KEYS.forEach(([k,label])=>{
+    const g = L.layerGroup();
+    DB.species.forEach(sp=>{
+      (sp[k]||[]).forEach(ring=>{
+        L.polygon(ring.map(([lo,la])=>[la,lo]),
+          {color:sp.color,weight:1.5,fillColor:sp.color,fillOpacity:0.30}).addTo(g)
+         .bindTooltip(`${sp.name} (n=${sp.n})`,{sticky:true});
+      });
+    });
+    groups[k]=g;
+  });
+  // observation points
+  const ptsG = L.layerGroup();
+  DB.species.forEach(sp=> sp.points.forEach(([lo,la])=>
+    L.circleMarker([la,lo],{radius:1.5,color:sp.color,weight:0,fillOpacity:0.5}).addTo(ptsG)));
+
+  let current='c30';
+  groups[current].addTo(map);
+
+  // custom radio control
+  const ctrl=L.control({position:'topright'});
+  ctrl.onAdd=()=>{
+    const d=L.DomUtil.create('div','panel');
+    d.innerHTML='<h4>Range hull</h4>'+
+      KEYS.map(([k,label])=>`<label><input type="radio" name="hull" value="${k}" ${k===current?'checked':''}> ${label}</label>`).join('')+
+      `<label style="margin-top:6px"><input type="checkbox" id="pts"> show observations</label>`+
+      `<div class="note">SoCal coastal prickly pears · iNaturalist · Grubbs-filtered</div>`;
+    L.DomEvent.disableClickPropagation(d);
+    d.querySelectorAll('input[name=hull]').forEach(r=>r.addEventListener('change',e=>{
+      map.removeLayer(groups[current]); current=e.target.value; groups[current].addTo(map);
+    }));
+    d.querySelector('#pts').addEventListener('change',e=> e.target.checked?ptsG.addTo(map):map.removeLayer(ptsG));
+    return d;
+  };
+  ctrl.addTo(map);
+
+  // legend
+  const leg=L.control({position:'bottomright'});
+  leg.onAdd=()=>{
+    const d=L.DomUtil.create('div','panel');
+    d.innerHTML='<h4>Species</h4>'+DB.species.map(sp=>
+      `<div><span class="swatch" style="background:${sp.color}"></span><span class="sp">${sp.name}</span></div>`).join('');
+    return d;
+  };
+  leg.addTo(map);
+});
+</script>
+</body>
+</html>

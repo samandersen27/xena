@@ -7,6 +7,7 @@ import GenusDetail from './pages/GenusDetail'
 import SpeciesDetail from './pages/SpeciesDetail'
 import { AddObservation, Curiosity } from './pages/Other'
 import FieldTrips from './pages/FieldTrips'
+import ProposalFigures from './pages/ProposalFigures'
 import './index.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
@@ -20,6 +21,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
           <Route path="/add"           element={<AddObservation />} />
           <Route path="/field-trips"   element={<FieldTrips />} />
           <Route path="/curiosity"     element={<Curiosity />} />
+          <Route path="/proposals"     element={<ProposalFigures />} />
         </Routes>
       </BrowserRouter>
     </DataProvider>

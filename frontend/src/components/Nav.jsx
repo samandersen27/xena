@@ -8,6 +8,7 @@ export default function Nav() {
       <NavLink to="/"            className={({ isActive }) => 'nav-link' + (isActive ? ' active' : '')}>Home</NavLink>
       <NavLink to="/field-trips" className={({ isActive }) => 'nav-link' + (isActive ? ' active' : '')}>Field trips</NavLink>
       <NavLink to="/curiosity"   className={({ isActive }) => 'nav-link' + (isActive ? ' active' : '')}>Curiosity</NavLink>
+      <NavLink to="/proposals"   className={({ isActive }) => 'nav-link' + (isActive ? ' active' : '')}>Proposals</NavLink>
       <div className="nav-spacer" />
       <button className="nav-add" onClick={() => navigate('/add')}>+ Add observation</button>
     </nav>

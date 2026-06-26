@@ -72,10 +72,10 @@ def basemap(ax):
     ax.set_xticks([]); ax.set_yticks([])
     for s in ax.spines.values(): s.set_edgecolor('#888')
 
-def scalebar(ax):
-    deg = 50 / 111.0; x0, y0 = W + 0.15, S + 0.12
+def scalebar(ax):  # top-left, over open ocean
+    deg = 50 / 111.0; x0, y0 = W + 0.13, N - 0.14
     ax.plot([x0, x0 + deg], [y0, y0], 'k-', lw=2, zorder=7)
-    ax.text(x0 + deg / 2, y0 + 0.04, "50 km", ha='center', fontsize=6.5, zorder=7)
+    ax.text(x0 + deg / 2, y0 - 0.10, "50 km", ha='center', fontsize=6.5, zorder=7)
 
 
 # ---------------------------------------------------------------- HYBRID
@@ -100,7 +100,7 @@ def fig_hybrid():
     a.set_title("A  Parental ranges & sympatry", fontsize=9.5, loc='left', fontweight='bold')
     a.legend(handles=[Patch(fc=c, alpha=0.5, label=n) for n, t, c in PARENTS] +
              [plt.Line2D([], [], ls=(0, (4, 2)), color='k', label='littoralis × oricola overlap')],
-             loc='lower right', fontsize=6.3, framealpha=0.9); scalebar(a)
+             loc='lower left', fontsize=6.3, framealpha=0.92); scalebar(a)
     a = ax[1]; basemap(a)
     for n, t, c in PARENTS:
         for r in pr[n]: a.plot([p[0] for p in r], [p[1] for p in r], c=c, lw=0.9, alpha=0.6, zorder=2)
@@ -109,7 +109,7 @@ def fig_hybrid():
         if len(H): a.scatter(H[:, 0], H[:, 1], s=16, marker=m, facecolor=c, edgecolor='white', lw=0.4,
                              zorder=5, label=f"{n} (n={len(H)})")
     a.set_title("B  Hybrid occurrences", fontsize=9.5, loc='left', fontweight='bold')
-    a.legend(loc='lower right', fontsize=6.3, framealpha=0.9)
+    a.legend(loc='lower left', fontsize=6.3, framealpha=0.92)
     a = ax[2]; basemap(a)
     xx, yy = np.mgrid[W:E:200j, S:N:200j]
     zz = gaussian_kde(allh.T, bw_method=0.25)(np.vstack([xx.ravel(), yy.ravel()])).reshape(xx.shape)
@@ -182,7 +182,7 @@ def fig_phenology():
     axp.set_yticklabels([]); axp.set_title("B  Complex-wide flowering\n(research-grade, n=%d)" % int(comp.sum()),
                                            fontsize=9, fontweight='bold', pad=12)
     fig.suptitle("Flowering phenology of the coastal Opuntia complex (iNaturalist photo annotations)",
-                 fontsize=12, fontweight='bold', y=0.99)
+                 fontsize=12.5, fontweight='bold', y=0.99)
     plt.savefig(FIGS / "fig_phenology.png", dpi=160, bbox_inches='tight'); plt.close()
     print("phenology done")
 
@@ -222,7 +222,7 @@ def fig_effort():
     a.scatter(focal[:, 0], focal[:, 1], s=3, c='#c0392b', alpha=0.4, lw=0, zorder=3,
               label=f"coastal complex (n={len(focal):,})")
     a.set_title("A  Raw observations & sampling effort", fontsize=9.5, loc='left', fontweight='bold')
-    a.legend(loc='lower right', fontsize=6.5, framealpha=0.9); scalebar(a)
+    a.legend(loc='lower left', fontsize=6.5, framealpha=0.92); scalebar(a)
     a = ax[1]; basemap(a)
     pm = np.ma.masked_invalid(prop.T)
     im = a.pcolormesh(xe, ye, pm, cmap='RdYlBu_r', vmin=0, vmax=1, alpha=0.8, zorder=2)
@@ -231,7 +231,7 @@ def fig_effort():
     cb.set_label('fraction of prickly-pear records\nthat are the coastal complex', fontsize=6.5)
     cb.ax.tick_params(labelsize=6)
     fig.suptitle("Effort-corrected occurrence of the coastal Opuntia complex (target-group background)",
-                 fontsize=12, fontweight='bold', y=0.99)
+                 fontsize=12.5, fontweight='bold', y=0.99)
     fig.text(0.5, 0.02, "Each cell = focal records ÷ all-Opuntia records (cells with ≥4 background obs). "
              "Corrects for where people look, not just where they go.", ha='center', fontsize=7.5, color='#444')
     plt.tight_layout(rect=[0, 0.04, 1, 0.96]); plt.savefig(FIGS / "fig_effort.png", dpi=160, bbox_inches='tight')
@@ -318,7 +318,7 @@ def fig_niche():
     a.set_title("B  Niche overlap (Schoener's D)", fontsize=9.5, loc='left', fontweight='bold')
     cb = fig.colorbar(im, ax=a, shrink=0.7, pad=0.02); cb.set_label("D", fontsize=7)
     fig.suptitle("Environmental niche of the coastal Opuntia complex (distance-to-coast × elevation)",
-                 fontsize=12, fontweight='bold', y=0.99)
+                 fontsize=12.5, fontweight='bold', y=0.99)
     fig.text(0.5, 0.02, "Elevation: Open-Meteo DEM. Distance-to-coast from Natural Earth shoreline. "
              "Ellipses = 1 SD. Schoener's D: 0 = no overlap, 1 = identical niche.", ha='center',
              fontsize=7.5, color='#444')

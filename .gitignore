@@ -11,3 +11,7 @@ opuntia_ids.json
 _land_socal.wkt
 _*.png
 _proposal_cache.json
+_forms_page.html
+_forms_cache.json
+_forms_refs.json
+_slugs.txt

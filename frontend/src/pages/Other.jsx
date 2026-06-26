@@ -69,6 +69,19 @@ export function Curiosity() {
         </p>
         <RichnessMap src="/xena/opuntia_richness.json" label="Opuntia species overlapping:" />
 
+        {/* Splitter's-splitter: lemonadeberry "form" diversity */}
+        <div className="section-head">
+          <h2>Opuntia "form" diversity</h2>
+          <span className="section-count">lemonadeberry morphotypes · a separate taxonomy</span>
+        </div>
+        <p style={{ color: 'var(--muted)', fontFamily: 'sans-serif', fontSize: '0.83rem', marginBottom: '0.9rem' }}>
+          The finest split of all: ~34 undescribed Southern California <em>Opuntia</em> "forms" catalogued on{' '}
+          <a href="https://lemonadeberry.weebly.com/untitled/opuntia" target="_blank" rel="noreferrer">lemonadeberry</a>,
+          each tracked as its own iNaturalist project. Treating every morphotype as a taxon, this is where the most
+          distinct forms overlap — a coastal SoCal hotspot of prickly-pear variation.
+        </p>
+        <RichnessMap src="/xena/forms_richness.json" label="forms overlapping:" />
+
         <div className="section-head">
           <h2>Studies</h2>
         </div>

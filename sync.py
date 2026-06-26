@@ -430,6 +430,11 @@ def main():
     OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
     OUTPUT_PATH.write_text(json.dumps(output, indent=2), encoding="utf-8")
 
+    # Publish the native checklist so it's downloadable from the site
+    if NATIVES_PATH.exists():
+        import shutil
+        shutil.copy(NATIVES_PATH, OUTPUT_PATH.parent / "natives.csv")
+
     print(f"\n=== SUMMARY ===")
     print(f"  Total observations   : {total_obs}")
     print(f"  Species on iNat      : {unique_species}")

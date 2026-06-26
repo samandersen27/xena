@@ -76,7 +76,8 @@ export default function Home() {
             </div>
             <ProgressBar pct={pct} />
             <div style={{ fontSize: '0.75rem', color: 'var(--muted)', fontFamily: 'sans-serif', marginTop: '0.4rem' }}>
-              Total list of species counted is available here: (link)
+              Total list of species counted is available here:{' '}
+              <a href="/xena/natives.csv" download="natives.csv">download the checklist (CSV) ↓</a>
             </div>
           </div>
 

@@ -59,6 +59,18 @@ export function Curiosity() {
         </p>
         <RichnessMap label="Native species overlapping:" />
 
+        {/* Opuntioideae — prickly pears + chollas overlaid */}
+        <div className="section-head">
+          <h2>Opuntioideae diversity</h2>
+          <span className="section-count">prickly pears + chollas, overlaid</span>
+        </div>
+        <p style={{ color: 'var(--muted)', fontFamily: 'sans-serif', fontSize: '0.83rem', marginBottom: '0.9rem' }}>
+          The whole subfamily in one view — the 73 <em>Opuntia</em> and 31 <em>Cylindropuntia</em>/<em>Grusonia</em> ranges
+          below, overlaid (104 taxa). Opuntioid diversity converges on the southern New Mexico / west Texas Chihuahuan
+          Desert, peaking at 23 overlapping species.
+        </p>
+        <RichnessMap src="/xena/opuntioideae_richness.json" label="Opuntioideae overlapping:" />
+
         {/* Splitter's Opuntia diversity */}
         <div className="section-head">
           <h2>Splitter's Opuntia diversity</h2>

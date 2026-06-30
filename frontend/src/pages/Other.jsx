@@ -69,6 +69,19 @@ export function Curiosity() {
         </p>
         <RichnessMap src="/xena/opuntia_richness.json" label="Opuntia species overlapping:" />
 
+        {/* Cholla diversity — Cholla Web */}
+        <div className="section-head">
+          <h2>Cholla diversity</h2>
+          <span className="section-count">Cylindropuntia &amp; Grusonia · Cholla Web ∩ iNaturalist</span>
+        </div>
+        <p style={{ color: 'var(--muted)', fontFamily: 'sans-serif', fontSize: '0.83rem', marginBottom: '0.9rem' }}>
+          The same treatment for the chollas — every <em>Cylindropuntia</em> and <em>Grusonia</em> recognized on{' '}
+          <a href="https://www.opuntiads.com/cyl/" target="_blank" rel="noreferrer">Cholla Web</a> that iNaturalist also
+          treats as a valid species (31 of them). Diversity peaks in the Chihuahuan Desert (Big Bend) and the Sonoran
+          Desert of southern Arizona.
+        </p>
+        <RichnessMap src="/xena/cholla_richness.json" label="chollas overlapping:" />
+
         {/* Splitter's-splitter: lemonadeberry "form" diversity */}
         <div className="section-head">
           <h2>Opuntia "form" diversity</h2>

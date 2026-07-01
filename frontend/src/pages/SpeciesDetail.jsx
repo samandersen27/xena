@@ -3,9 +3,13 @@ import { useState } from 'react'
 import { MapContainer, TileLayer, CircleMarker, Popup, Polygon } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
 import Nav from '../components/Nav'
+import { useLightbox } from '../components/Lightbox'
 import { useTaxon, useObservationsForTaxon, useRange } from '../lib/data'
 
+const fullSize = p => p.original || p.large || p.medium || p.small
+
 function PhotoGallery({ observations }) {
+  const openImg = useLightbox()
   const allPhotos = observations.flatMap(o =>
     (o.photos || []).map(p => ({ ...p, obs: o }))
   )
@@ -23,7 +27,9 @@ function PhotoGallery({ observations }) {
       <img
         src={current.large || current.medium}
         alt=""
-        style={{ width: '100%', height: 300, objectFit: 'cover', borderRadius: 'var(--radius)', display: 'block', marginBottom: 8 }}
+        title="Click to view full screen"
+        onClick={() => openImg(fullSize(current))}
+        style={{ width: '100%', height: 300, objectFit: 'cover', borderRadius: 'var(--radius)', display: 'block', marginBottom: 8, cursor: 'zoom-in' }}
       />
       {allPhotos.length > 1 && (
         <div style={{ display: 'flex', gap: 5, flexWrap: 'wrap' }}>
@@ -57,11 +63,14 @@ function PhotoGallery({ observations }) {
 }
 
 function ObsRow({ obs }) {
+  const openImg = useLightbox()
   const badgeClass = `badge badge-${obs.quality_grade || 'casual'}`
   return (
     <div style={{ display: 'flex', gap: '0.8rem', padding: '0.8rem 0', borderBottom: '1px solid var(--sand-border)', flexWrap: 'wrap' }}>
       {obs.photos?.[0]?.small && (
-        <img src={obs.photos[0].small} alt="" style={{ width: 60, height: 60, objectFit: 'cover', borderRadius: 6, flexShrink: 0 }} />
+        <img src={obs.photos[0].small} alt="" title="Click to view full screen"
+          onClick={() => openImg(fullSize(obs.photos[0]))}
+          style={{ width: 60, height: 60, objectFit: 'cover', borderRadius: 6, flexShrink: 0, cursor: 'zoom-in' }} />
       )}
       <div style={{ flex: 1, minWidth: 160 }}>
         <div style={{ fontFamily: 'sans-serif', fontSize: '0.88rem', fontWeight: 500 }}>{obs.observed_on}</div>

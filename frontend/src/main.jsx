@@ -2,6 +2,7 @@ import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { DataProvider } from './lib/data'
+import { LightboxProvider } from './components/Lightbox'
 import Home from './pages/Home'
 import GenusDetail from './pages/GenusDetail'
 import SpeciesDetail from './pages/SpeciesDetail'
@@ -13,6 +14,7 @@ import './index.css'
 ReactDOM.createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <DataProvider>
+      <LightboxProvider>
       <BrowserRouter basename="/xena">
         <Routes>
           <Route path="/"              element={<Home />} />
@@ -24,6 +26,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(
           <Route path="/proposals"     element={<ProposalFigures />} />
         </Routes>
       </BrowserRouter>
+      </LightboxProvider>
     </DataProvider>
   </React.StrictMode>
 )

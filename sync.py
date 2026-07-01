@@ -435,6 +435,27 @@ def main():
         import shutil
         shutil.copy(NATIVES_PATH, OUTPUT_PATH.parent / "natives.csv")
 
+    # Optional site background: drop a background.tif (or .tiff/.jpg/.png) in the
+    # repo root or frontend/public and it becomes the page backdrop. TIFF isn't
+    # web-renderable, so convert it to a web JPEG the CSS references.
+    HERE = Path(__file__).parent
+    for cand in ("background.tif", "background.tiff", "background.jpg", "background.png"):
+        for base in (HERE, OUTPUT_PATH.parent):
+            src = base / cand
+            if src.exists():
+                try:
+                    from PIL import Image
+                    im = Image.open(src).convert("RGB")
+                    im.thumbnail((2400, 2400))
+                    im.save(OUTPUT_PATH.parent / "background.jpg", quality=85)
+                    print(f"  Background            : {src.name} -> background.jpg")
+                except Exception as e:
+                    print(f"  Background            : could not convert {src.name} ({e})")
+                break
+        else:
+            continue
+        break
+
     print(f"\n=== SUMMARY ===")
     print(f"  Total observations   : {total_obs}")
     print(f"  Species on iNat      : {unique_species}")

@@ -169,7 +169,7 @@ export default function FieldTrips() {
   return (
     <>
       <Nav />
-      <div style={{ display: 'flex', height: 'calc(100vh - 54px)' }}>
+      <div style={{ display: 'flex', height: 'calc(100vh - 58px)' }}>
         {/* Controls + results */}
         <div style={{ width: 340, flexShrink: 0, borderRight: '1px solid var(--sand-border)', background: 'var(--white)', overflowY: 'auto', display: 'flex', flexDirection: 'column' }}>
           <div style={{ padding: '1.1rem 1.2rem', borderBottom: '1px solid var(--sand-border)' }}>
